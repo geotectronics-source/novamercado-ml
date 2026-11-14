@@ -1,0 +1,14 @@
+# Imagen de la API y del bootstrap (versiones fijas)
+fastapi==0.115.6
+uvicorn==0.34.0
+pydantic==2.10.4
+sqlalchemy==2.0.36
+psycopg2-binary==2.9.10
+pandas==2.2.3
+numpy==1.26.4
+lightgbm==4.5.0
+mlflow-skinny==2.19.0
+requests==2.32.3
+# pruebas
+pytest==8.3.4
+httpx==0.28.1

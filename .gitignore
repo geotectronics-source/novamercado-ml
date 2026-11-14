@@ -1,0 +1,18 @@
+# Datos publicados: no forman parte del repositorio
+datos/*
+!datos/LEEME.md
+
+# Credenciales
+.env
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+build/
+
+# MLflow local
+mlruns/
+mlartifacts/

@@ -1,0 +1,52 @@
+{
+  "solicitudes": 571,
+  "solicitudes_por_estado": {
+    "prediccion:422:-": 12,
+    "prediccion:200:ok": 212,
+    "observaciones:200:advertencia": 9,
+    "prediccion:200:advertencia": 28,
+    "observaciones:200:corregido": 38,
+    "prediccion:200:corregido": 44,
+    "observaciones:200:ok": 228
+  },
+  "predicciones": 3408,
+  "correcciones": 147,
+  "observaciones": 3244,
+  "reentrenamientos": [
+    {
+      "id": "reent_20261114T190818_168440",
+      "estado": "exitoso",
+      "promovido": true,
+      "version": "2",
+      "motivo": "Costo en validación 88 095 vs 89 323 del vigente (mejora 1.4%; se exige ≥ 1%)"
+    },
+    {
+      "id": "reent_20261114T190859_32e628",
+      "estado": "exitoso",
+      "promovido": false,
+      "version": "2",
+      "motivo": "Costo en validación 92 659 vs 92 760 del vigente (mejora 0.1%; se exige ≥ 1%)"
+    },
+    {
+      "id": "reent_20261114T190925_3471a2",
+      "estado": "exitoso",
+      "promovido": false,
+      "version": "2",
+      "motivo": "Costo en validación 98 924 vs 98 680 del vigente (mejora -0.2%; se exige ≥ 1%)"
+    },
+    {
+      "id": "reent_20261114T190956_41fb7f",
+      "estado": "exitoso",
+      "promovido": false,
+      "version": "2",
+      "motivo": "Costo en validación 102 985 vs 102 784 del vigente (mejora -0.2%; se exige ≥ 1%)"
+    },
+    {
+      "id": "reent_20261114T191040_6d6976",
+      "estado": "fallido",
+      "promovido": false,
+      "version": null,
+      "motivo": "Falló una tarea del DAG; el modelo vigente no cambió"
+    }
+  ]
+}

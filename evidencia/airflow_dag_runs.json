@@ -1,0 +1,70 @@
+{
+  "dag_id": "reentrenamiento_modelo",
+  "ejecuciones": [
+    {
+      "dag_run_id": "reent_20261114T190818_168440",
+      "estado": "success",
+      "inicio": "2026-11-14T19:08:19.370693+00:00",
+      "fin": "2026-11-14T19:08:34.500658+00:00",
+      "tareas": {
+        "preparar_datos": "success",
+        "entrenar_candidato": "success",
+        "evaluar_y_decidir": "success",
+        "publicar_resultado": "success",
+        "marcar_fallo": "skipped"
+      }
+    },
+    {
+      "dag_run_id": "reent_20261114T190859_32e628",
+      "estado": "success",
+      "inicio": "2026-11-14T19:08:59.633156+00:00",
+      "fin": "2026-11-14T19:09:14.809560+00:00",
+      "tareas": {
+        "publicar_resultado": "success",
+        "preparar_datos": "success",
+        "marcar_fallo": "skipped",
+        "entrenar_candidato": "success",
+        "evaluar_y_decidir": "success"
+      }
+    },
+    {
+      "dag_run_id": "reent_20261114T190925_3471a2",
+      "estado": "success",
+      "inicio": "2026-11-14T19:09:25.854897+00:00",
+      "fin": "2026-11-14T19:09:42.061004+00:00",
+      "tareas": {
+        "preparar_datos": "success",
+        "evaluar_y_decidir": "success",
+        "entrenar_candidato": "success",
+        "publicar_resultado": "success",
+        "marcar_fallo": "skipped"
+      }
+    },
+    {
+      "dag_run_id": "reent_20261114T190956_41fb7f",
+      "estado": "success",
+      "inicio": "2026-11-14T19:09:57.078277+00:00",
+      "fin": "2026-11-14T19:10:14.158950+00:00",
+      "tareas": {
+        "preparar_datos": "success",
+        "entrenar_candidato": "success",
+        "evaluar_y_decidir": "success",
+        "publicar_resultado": "success",
+        "marcar_fallo": "skipped"
+      }
+    },
+    {
+      "dag_run_id": "reent_20261114T191040_6d6976",
+      "estado": "failed",
+      "inicio": "2026-11-14T19:10:41.355834+00:00",
+      "fin": "2026-11-14T19:13:37.717761+00:00",
+      "tareas": {
+        "preparar_datos": "success",
+        "evaluar_y_decidir": "upstream_failed",
+        "entrenar_candidato": "failed",
+        "publicar_resultado": "upstream_failed",
+        "marcar_fallo": "failed"
+      }
+    }
+  ]
+}

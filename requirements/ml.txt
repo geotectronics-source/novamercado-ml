@@ -1,0 +1,9 @@
+# Entorno virtual de ML dentro de la imagen de Airflow (aislado de las dependencias de Airflow)
+pandas==2.2.3
+numpy==1.26.4
+lightgbm==4.5.0
+mlflow-skinny==2.19.0
+sqlalchemy==2.0.36
+psycopg2-binary==2.9.10
+requests==2.32.3
+pydantic==2.10.4

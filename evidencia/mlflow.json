@@ -1,0 +1,236 @@
+{
+  "experimentos": [
+    {
+      "nombre": "novamercado_pronostico",
+      "id": "1",
+      "runs": [
+        {
+          "nombre": "bootstrap_baseline_estacional",
+          "run_id": "1bacd62c40094cac95af3b3b5126574e",
+          "metricas": {
+            "costo_total": 112022.6,
+            "costo_sugerir_media": 143795.2,
+            "mae": 45.8964,
+            "wape": 0.2147,
+            "sesgo_pct": -0.0419
+          },
+          "etiquetas": {
+            "origen": "bootstrap",
+            "tipo_modelo": "baseline_estacional"
+          }
+        },
+        {
+          "nombre": "bootstrap_lightgbm_cociente",
+          "run_id": "9a2cb43859e44777a071f9a90b3e1051",
+          "metricas": {
+            "costo_total": 89947.0,
+            "costo_sugerir_media": 119144.6,
+            "mae": 37.5121,
+            "wape": 0.1755,
+            "sesgo_pct": -0.0146
+          },
+          "etiquetas": {
+            "origen": "bootstrap",
+            "tipo_modelo": "lightgbm_cociente"
+          }
+        },
+        {
+          "nombre": "reentrenamiento_reent_20261114T190818_168440_baseline_estacional",
+          "run_id": "f8da34db871446b7876bde3f52427128",
+          "metricas": {
+            "costo_total": 109241.1,
+            "costo_sugerir_media": 140840.9,
+            "mae": 45.5575,
+            "wape": 0.2131,
+            "sesgo_pct": -0.0246
+          },
+          "etiquetas": {
+            "origen": "reentrenamiento_reent_20261114T190818_168440",
+            "tipo_modelo": "baseline_estacional"
+          }
+        },
+        {
+          "nombre": "reentrenamiento_reent_20261114T190818_168440_lightgbm_cociente",
+          "run_id": "c536460a731f4e6db600e609a4ea7de7",
+          "metricas": {
+            "costo_total": 88095.4,
+            "costo_sugerir_media": 115634.6,
+            "mae": 37.3303,
+            "wape": 0.1746,
+            "sesgo_pct": 0.0014
+          },
+          "etiquetas": {
+            "origen": "reentrenamiento_reent_20261114T190818_168440",
+            "tipo_modelo": "lightgbm_cociente"
+          }
+        },
+        {
+          "nombre": "reentrenamiento_reent_20261114T190859_32e628_baseline_estacional",
+          "run_id": "83faa934c9fc4357a25ffa213506905a",
+          "metricas": {
+            "costo_total": 115509.6,
+            "costo_sugerir_media": 157694.7,
+            "mae": 49.2644,
+            "wape": 0.2257,
+            "sesgo_pct": -0.0324
+          },
+          "etiquetas": {
+            "origen": "reentrenamiento_reent_20261114T190859_32e628",
+            "tipo_modelo": "baseline_estacional"
+          }
+        },
+        {
+          "nombre": "reentrenamiento_reent_20261114T190859_32e628_lightgbm_cociente",
+          "run_id": "66e55bb8f3fb4fd78fb210713d0a664e",
+          "metricas": {
+            "costo_total": 92659.2,
+            "costo_sugerir_media": 128971.9,
+            "mae": 39.7767,
+            "wape": 0.1822,
+            "sesgo_pct": -0.02
+          },
+          "etiquetas": {
+            "origen": "reentrenamiento_reent_20261114T190859_32e628",
+            "tipo_modelo": "lightgbm_cociente"
+          }
+        },
+        {
+          "nombre": "reentrenamiento_reent_20261114T190925_3471a2_baseline_estacional",
+          "run_id": "9ab319151f6e4a6793e21c02900e2c34",
+          "metricas": {
+            "costo_total": 120688.7,
+            "costo_sugerir_media": 174172.4,
+            "mae": 52.3731,
+            "wape": 0.2359,
+            "sesgo_pct": -0.0352
+          },
+          "etiquetas": {
+            "origen": "reentrenamiento_reent_20261114T190925_3471a2",
+            "tipo_modelo": "baseline_estacional"
+          }
+        },
+        {
+          "nombre": "reentrenamiento_reent_20261114T190925_3471a2_lightgbm_cociente",
+          "run_id": "0007be64f8814158963b9e8a30624c8b",
+          "metricas": {
+            "costo_total": 98923.7,
+            "costo_sugerir_media": 143163.6,
+            "mae": 42.2967,
+            "wape": 0.1905,
+            "sesgo_pct": -0.0325
+          },
+          "etiquetas": {
+            "origen": "reentrenamiento_reent_20261114T190925_3471a2",
+            "tipo_modelo": "lightgbm_cociente"
+          }
+        },
+        {
+          "nombre": "reentrenamiento_reent_20261114T190956_41fb7f_baseline_estacional",
+          "run_id": "6805de6fc5234e1394383765e2f68edc",
+          "metricas": {
+            "costo_total": 127563.1,
+            "costo_sugerir_media": 179373.8,
+            "mae": 53.63,
+            "wape": 0.2377,
+            "sesgo_pct": -0.04
+          },
+          "etiquetas": {
+            "origen": "reentrenamiento_reent_20261114T190956_41fb7f",
+            "tipo_modelo": "baseline_estacional"
+          }
+        },
+        {
+          "nombre": "reentrenamiento_reent_20261114T190956_41fb7f_lightgbm_cociente",
+          "run_id": "5f9fa51986cf4554858695fb839de8ce",
+          "metricas": {
+            "costo_total": 102985.1,
+            "costo_sugerir_media": 151911.0,
+            "mae": 43.996,
+            "wape": 0.195,
+            "sesgo_pct": -0.0433
+          },
+          "etiquetas": {
+            "origen": "reentrenamiento_reent_20261114T190956_41fb7f",
+            "tipo_modelo": "lightgbm_cociente"
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "Default",
+      "id": "0",
+      "runs": []
+    }
+  ],
+  "modelo_registrado": {
+    "nombre": "novamercado_pronostico_ventas",
+    "aliases": [
+      {
+        "alias": "vigente",
+        "version": "2"
+      }
+    ],
+    "versiones": [
+      {
+        "version": "1",
+        "run_id": "9a2cb43859e44777a071f9a90b3e1051",
+        "etiquetas": {
+          "origen": "bootstrap",
+          "tipo_modelo": "lightgbm_cociente",
+          "costo_validacion": "89947.0",
+          "fecha_max_datos": "2026-02-28",
+          "decision": "promovido",
+          "motivo": "No había modelo vigente; costo en validación 89 947"
+        }
+      },
+      {
+        "version": "2",
+        "run_id": "c536460a731f4e6db600e609a4ea7de7",
+        "etiquetas": {
+          "origen": "reentrenamiento_reent_20261114T190818_168440",
+          "tipo_modelo": "lightgbm_cociente",
+          "costo_validacion": "88095.4",
+          "fecha_max_datos": "2026-03-06",
+          "decision": "promovido",
+          "motivo": "Costo en validación 88 095 vs 89 323 del vigente (mejora 1.4%; se exige ≥ 1%)"
+        }
+      },
+      {
+        "version": "3",
+        "run_id": "66e55bb8f3fb4fd78fb210713d0a664e",
+        "etiquetas": {
+          "origen": "reentrenamiento_reent_20261114T190859_32e628",
+          "tipo_modelo": "lightgbm_cociente",
+          "costo_validacion": "92659.2",
+          "fecha_max_datos": "2026-03-13",
+          "decision": "rechazado",
+          "motivo": "Costo en validación 92 659 vs 92 760 del vigente (mejora 0.1%; se exige ≥ 1%)"
+        }
+      },
+      {
+        "version": "4",
+        "run_id": "0007be64f8814158963b9e8a30624c8b",
+        "etiquetas": {
+          "origen": "reentrenamiento_reent_20261114T190925_3471a2",
+          "tipo_modelo": "lightgbm_cociente",
+          "costo_validacion": "98923.7",
+          "fecha_max_datos": "2026-03-20",
+          "decision": "rechazado",
+          "motivo": "Costo en validación 98 924 vs 98 680 del vigente (mejora -0.2%; se exige ≥ 1%)"
+        }
+      },
+      {
+        "version": "5",
+        "run_id": "5f9fa51986cf4554858695fb839de8ce",
+        "etiquetas": {
+          "origen": "reentrenamiento_reent_20261114T190956_41fb7f",
+          "tipo_modelo": "lightgbm_cociente",
+          "costo_validacion": "102985.1",
+          "fecha_max_datos": "2026-03-27",
+          "decision": "rechazado",
+          "motivo": "Costo en validación 102 985 vs 102 784 del vigente (mejora -0.2%; se exige ≥ 1%)"
+        }
+      }
+    ]
+  }
+}
