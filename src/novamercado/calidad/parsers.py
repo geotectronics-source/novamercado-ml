@@ -148,7 +148,11 @@ def interpretar_fecha(valor: Any) -> Interpretacion:
     s = valor.strip()
     if _ISO.match(s):
         f = _fecha(*map(int, s.split("-")))
-        return Interpretacion(f) if f else Interpretacion(None, detalle=f"'{valor}' no es una fecha del calendario")
+        if f is None:
+            return Interpretacion(None, detalle=f"'{valor}' no es una fecha del calendario")
+        if s != valor:  # p. ej. espacios alrededor: corrección inequívoca, pero se informa
+            return Interpretacion(f, REPARAR, f"'{valor}' tenía espacios; se interpretó como {f}")
+        return Interpretacion(f)
     if m := _ISO_HORA.match(s):
         f = _fecha(int(m[1]), int(m[2]), int(m[3]))
         if f:

@@ -80,3 +80,25 @@ def test_criterio_de_reemplazo(monkeypatch, cat, cfg, costo_cand, costo_vig, pro
     dec = ciclo.decidir(h, cat, cfg, ent)
     assert dec["promover"] is promueve
     assert "Costo en validación" in dec["motivo"] or "No había" in dec["motivo"]
+
+
+def test_ventanas_ignoran_una_fecha_aislada_muy_posterior(cat):
+    """Un registro con una fecha errónea muy lejana no debe desplazar la validación."""
+    from novamercado.entrenamiento import definir_ventanas
+
+    h = historia_sintetica(cat)
+    raro = pd.DataFrame({"fecha": [pd.Timestamp("2030-01-01")], "tienda_id": [5], "familia_id": ["abarrotes"],
+                         "ventas": [100], "en_promocion": [0]})
+    v = definir_ventanas(construir_features(pd.concat([h, raro]), cat))
+    assert v.fin_validacion == pd.Timestamp("2025-12-31")
+
+
+def test_ubicar_carpeta_datos_en_subcarpeta(tmp_path):
+    from novamercado.db import ubicar_carpeta_datos
+
+    sub = tmp_path / "datos_lab2"
+    sub.mkdir()
+    (sub / "historico_ventas.csv").write_text("x")
+    assert ubicar_carpeta_datos(tmp_path) == sub
+    (tmp_path / "historico_ventas.csv").write_text("x")
+    assert ubicar_carpeta_datos(tmp_path) == tmp_path

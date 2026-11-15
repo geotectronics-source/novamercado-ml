@@ -45,6 +45,7 @@ def test_interpretar_conteo(entrada, valor, accion):
 
 @pytest.mark.parametrize("entrada, valor, accion", [
     ("2025-11-17", date(2025, 11, 17), None),
+    (" 2025-11-17 ", date(2025, 11, 17), REPARAR),
     ("2025-11-17T00:00:00", date(2025, 11, 17), REPARAR),     # E04
     ("2025-11-17 08:30", date(2025, 11, 17), REPARAR),
     ("2025-11-17T00:00:00Z", date(2025, 11, 17), REPARAR),

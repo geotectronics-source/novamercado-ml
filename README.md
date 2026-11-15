@@ -31,8 +31,8 @@ tiendas ─▶ api ──SQL──▶ db (PostgreSQL del producto)
 ## 2. Levantar el producto desde cero
 
 ```bash
-git clone <url-del-repositorio> novamercado-ml && cd novamercado-ml
-git checkout entrega-lab2
+git clone --branch entrega-lab2 https://github.com/geotectronics-source/novamercado-ml.git
+cd novamercado-ml
 cp .env.example .env            # ajuste las claves si lo desea
 ```
 
@@ -41,6 +41,9 @@ cp .env.example .env            # ajuste las claves si lo desea
 ```
 datos/tiendas.csv  datos/familias.csv  datos/costos.csv  datos/feriados.csv  datos/historico_ventas.csv
 ```
+
+(También funciona si copia la carpeta descomprimida completa, p. ej. `datos/datos_lab2/…`: el
+bootstrap busca la única subcarpeta que contenga `historico_ventas.csv`.)
 
 ```bash
 docker compose up -d --build

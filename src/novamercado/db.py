@@ -66,6 +66,24 @@ CREATE TABLE IF NOT EXISTS estado_sistema (
 """
 
 DIAS_HISTORIA_SERVICIO = 400  # suficiente para rezagos de 364 días + ventana anual
+ARCHIVOS_PUBLICADOS = ["tiendas.csv", "familias.csv", "costos.csv", "feriados.csv", "historico_ventas.csv"]
+
+
+def ubicar_carpeta_datos(carpeta: str | Path) -> Path:
+    """Devuelve la carpeta que contiene los CSV publicados.
+
+    Tolera que se haya copiado la carpeta descomprimida completa (p. ej. ``datos/datos_lab2/``):
+    si los archivos no están en la raíz, busca la única subcarpeta que tenga ``historico_ventas.csv``.
+    """
+    carpeta = Path(carpeta)
+    if (carpeta / "historico_ventas.csv").exists():
+        return carpeta
+    candidatas = sorted({p.parent for p in carpeta.rglob("historico_ventas.csv")})
+    if len(candidatas) == 1:
+        return candidatas[0]
+    if len(candidatas) > 1:
+        raise FileNotFoundError(f"Hay varias copias de historico_ventas.csv en {carpeta}: {candidatas}")
+    return carpeta
 
 
 class Repositorio:
@@ -103,9 +121,8 @@ class Repositorio:
         return bool(n) and bool(t)
 
     def cargar_csv(self, carpeta: str | Path) -> dict:
-        carpeta = Path(carpeta)
-        requeridos = ["tiendas.csv", "familias.csv", "costos.csv", "feriados.csv", "historico_ventas.csv"]
-        faltan = [f for f in requeridos if not (carpeta / f).exists()]
+        carpeta = ubicar_carpeta_datos(carpeta)
+        faltan = [f for f in ARCHIVOS_PUBLICADOS if not (carpeta / f).exists()]
         if faltan:
             raise FileNotFoundError(f"Faltan archivos publicados en {carpeta}: {faltan}")
         conteo = {}

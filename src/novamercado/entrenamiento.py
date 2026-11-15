@@ -47,7 +47,10 @@ class ResultadoCandidato:
 
 
 def definir_ventanas(features: pd.DataFrame, dias_val=DIAS_VALIDACION, dias_cal=DIAS_CALIBRACION) -> Ventanas:
-    t = features.loc[features["ventas"].notna(), "fecha"].max()
+    # T = último día con una cantidad "normal" de registros: una observación aislada con una
+    # fecha muy posterior (p. ej. un error de captura) no debe desplazar las ventanas.
+    por_dia = features.loc[features["ventas"].notna()].groupby("fecha").size()
+    t = por_dia[por_dia >= 0.25 * por_dia.median()].index.max()
     fin_cal = t - pd.Timedelta(days=dias_val)
     return Ventanas(fin_entrenamiento_a=fin_cal - pd.Timedelta(days=dias_cal), fin_calibracion=fin_cal,
                     fin_validacion=t)
