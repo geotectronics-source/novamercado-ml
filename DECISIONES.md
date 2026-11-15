@@ -178,8 +178,9 @@ Coherencia con los costos: donde sobrar es barato (licores) se sugiere 60 % por 
 esperado; donde sobrar es caro (pan) se sugiere 15 % por debajo. Frente a sugerir la venta
 esperada, el costo baja ~25 % en validación y ~30 % en la simulación de 28 días.
 
-Alternativas: regresión cuantílica con un LightGBM por τ (12 modelos más, mismo resultado
-esperado y más difícil de operar); `media + z·σ` suponiendo normalidad (las ventas son
+Alternativas: regresión cuantílica con un LightGBM por τ (probada en `docs/ANALISIS_MODELOS.md`:
+20 % más costosa e inestable en τ extremos, llegó a sugerir ×90 en licores) y pérdida de costo
+personalizada (+15 %); `media + z·σ` suponiendo normalidad (las ventas son
 asimétricas y de conteo). El multiplicador multiplicativo se eligió porque el error crece con el
 volumen, y separarlo por tipo de tienda corrige que las tiendas express (volúmenes bajos) tengan
 más ruido relativo.

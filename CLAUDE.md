@@ -9,7 +9,8 @@ Servicio de pronóstico diario de ventas (NovaMercado, Laboratorio 2). Lea prime
 python -m pytest                                   # pruebas (sin MLflow ni PostgreSQL)
 docker compose up -d --build                       # producto completo (requiere .env y datos/)
 docker compose run --rm --no-deps api python -m pytest -q /app/tests
-python scripts/experimento.py datos                # backtest baseline vs LightGBM
+python scripts/experimento.py datos                # backtest baseline vs LightGBM vs ensamble
+python scripts/comparar_modelos.py datos           # 6 modelos alternativos (requiere scikit-learn)
 python scripts/simulador.py --dias 28              # operación simulada contra la API
 python scripts/prueba_resiliencia.py               # caída de MLflow y reinicio
 ```

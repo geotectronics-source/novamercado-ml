@@ -31,8 +31,9 @@ tiendas ─▶ api ──SQL──▶ db (PostgreSQL del producto)
 ## 2. Levantar el producto desde cero
 
 ```bash
-git clone --branch entrega-lab2 https://github.com/geotectronics-source/novamercado-ml.git
+git clone https://github.com/geotectronics-source/novamercado-ml.git
 cd novamercado-ml
+git checkout entrega-lab2         # versión entregada
 cp .env.example .env            # ajuste las claves si lo desea
 ```
 
@@ -50,7 +51,7 @@ docker compose up -d --build
 ```
 
 Al levantarse desde cero, el servicio `bootstrap` crea el esquema, carga los CSV en PostgreSQL,
-entrena el *baseline* y el modelo LightGBM, los registra en MLflow y promueve el mejor con el
+entrena el *baseline*, el LightGBM y el ensamble LightGBM + log-lineal, los registra en MLflow y promueve el mejor con el
 alias `vigente`. La API lo detecta y lo carga sola. En nuestras pruebas, el producto queda listo
 en **~45 s** sin contar la construcción de imágenes.
 
