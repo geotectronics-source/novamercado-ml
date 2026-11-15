@@ -2,10 +2,10 @@
   "dag_id": "reentrenamiento_modelo",
   "ejecuciones": [
     {
-      "dag_run_id": "reent_20261115T002104_173cd1",
+      "dag_run_id": "reent_20261115T020850_ecd0f6",
       "estado": "success",
-      "inicio": "2026-11-15T00:21:05.006978+00:00",
-      "fin": "2026-11-15T00:21:20.511660+00:00",
+      "inicio": "2026-11-15T02:08:51.416278+00:00",
+      "fin": "2026-11-15T02:09:10.793235+00:00",
       "tareas": {
         "preparar_datos": "success",
         "entrenar_candidato": "success",
@@ -15,10 +15,10 @@
       }
     },
     {
-      "dag_run_id": "reent_20261115T002135_08c5a2",
+      "dag_run_id": "reent_20261115T020921_ac7937",
       "estado": "success",
-      "inicio": "2026-11-15T00:21:35.560006+00:00",
-      "fin": "2026-11-15T00:21:51.771344+00:00",
+      "inicio": "2026-11-15T02:09:21.828781+00:00",
+      "fin": "2026-11-15T02:09:42.049848+00:00",
       "tareas": {
         "publicar_resultado": "success",
         "preparar_datos": "success",
@@ -28,10 +28,10 @@
       }
     },
     {
-      "dag_run_id": "reent_20261115T002201_fad08a",
+      "dag_run_id": "reent_20261115T021008_e63bd1",
       "estado": "success",
-      "inicio": "2026-11-15T00:22:01.766342+00:00",
-      "fin": "2026-11-15T00:22:16.953412+00:00",
+      "inicio": "2026-11-15T02:10:09.175565+00:00",
+      "fin": "2026-11-15T02:10:29.338309+00:00",
       "tareas": {
         "preparar_datos": "success",
         "evaluar_y_decidir": "success",
@@ -41,28 +41,28 @@
       }
     },
     {
-      "dag_run_id": "reent_20261115T002227_4a0629",
+      "dag_run_id": "reent_20261115T021040_1d3ffc",
       "estado": "success",
-      "inicio": "2026-11-15T00:22:27.870239+00:00",
-      "fin": "2026-11-15T00:22:44.037102+00:00",
+      "inicio": "2026-11-15T02:10:41.502010+00:00",
+      "fin": "2026-11-15T02:11:01.714202+00:00",
       "tareas": {
+        "preparar_datos": "success",
         "entrenar_candidato": "success",
         "evaluar_y_decidir": "success",
         "publicar_resultado": "success",
-        "marcar_fallo": "skipped",
-        "preparar_datos": "success"
+        "marcar_fallo": "skipped"
       }
     },
     {
-      "dag_run_id": "reent_20261115T002304_71d65e",
+      "dag_run_id": "reent_20261115T021118_474229",
       "estado": "failed",
-      "inicio": "2026-11-15T00:23:05.174086+00:00",
-      "fin": "2026-11-15T00:26:02.719441+00:00",
+      "inicio": "2026-11-15T02:11:18.836702+00:00",
+      "fin": "2026-11-15T02:14:24.213256+00:00",
       "tareas": {
-        "preparar_datos": "success",
         "evaluar_y_decidir": "upstream_failed",
         "entrenar_candidato": "failed",
         "publicar_resultado": "upstream_failed",
+        "preparar_datos": "success",
         "marcar_fallo": "failed"
       }
     }

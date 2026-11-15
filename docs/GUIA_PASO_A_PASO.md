@@ -78,8 +78,13 @@ reciente = 1.07". Así el modelo aprende patrones que valen para tiendas grandes
 2. **LightGBM global** (`ModeloLGBM`): un solo modelo para las 120 series; predice el
    **cociente** ventas / nivel reciente. Los árboles no extrapolan; el cociente sí se adapta a
    cambios de nivel porque el nivel entra como `base`.
+3. **Ensamble** (`ModeloEnsamble`): promedio geométrico de LightGBM y una **regresión log-lineal**
+   (`ModeloLogLineal`, Ridge con interacciones). Se agregó tras analizar los datos
+   (`docs/ANALISIS_MODELOS.md`): la parte lineal extrapola, que es justo lo que a los árboles les falta.
 
-Resultado del backtest con origen móvil (4 cortes): **−20 % de costo** frente al baseline.
+Resultado del backtest con origen móvil (4 cortes): LightGBM y el ensamble, **−20 % de costo**
+frente al baseline. El ensamble gana en diciembre y en el corte más reciente; LightGBM, en los
+otros dos. Por eso **los tres compiten en cada entrenamiento** y se registra el mejor.
 
 **Verificar:** `python scripts/experimento.py datos`
 
@@ -97,7 +102,7 @@ la media sino el cuantil τ = c_falt / (c_falt + c_sobr).
 * Licores: τ = 2/(2+0.1) = 0.95 → sugerir **más** (k ≈ 1.60).
 
 Se elige `k` por familia × tipo de tienda minimizando el costo real en una **ventana de
-calibración** que el modelo no vio. Resultado: ~25–32 % menos costo que sugerir la media.
+calibración** que el modelo no vio. Resultado: ~25–30 % menos costo que sugerir la media.
 
 **Verificar:** `test_multiplicador_sigue_el_cuantil_critico` comprueba con datos normales que el
 `k` óptimo coincide con el cuantil teórico.
@@ -108,7 +113,7 @@ calibración** que el modelo no vio. Resultado: ~25–32 % menos costo que suger
 
 ## Fase 6 · MLflow (`registro.py`, `ciclo.py`)
 
-* Cada entrenamiento crea **dos runs** (baseline y LightGBM) con parámetros, métricas técnicas
+* Cada entrenamiento crea **tres runs** (baseline, LightGBM y ensamble) con parámetros, métricas técnicas
   (MAE, RMSE, WAPE, sesgo) y de negocio (`costo_total`), artefactos (multiplicadores,
   predicciones de validación) y el modelo *pyfunc*.
 * El mejor se registra como **versión** en el Model Registry, con etiquetas (`costo_validacion`,
@@ -215,8 +220,8 @@ preparar_datos → entrenar_candidato → evaluar_y_decidir → publicar_resulta
 
 | Script | Qué simula | Resultado obtenido |
 |---|---|---|
-| `scripts/simulador.py` | 28 días: observaciones, 280 solicitudes (25 % con errores), cambio de demanda, 4 reentrenamientos | sin intervención manual; costo −32 % vs sugerir la media; 1 promoción usada en 5 s |
-| `scripts/prueba_resiliencia.py` | MLflow caído, reentrenamiento que falla, reinicio | degradado en 12 s, ok en 18 s, modelo intacto, reinicio en 42 s |
+| `scripts/simulador.py` | 28 días: observaciones, 280 solicitudes (25 % con errores), cambio de demanda, 4 reentrenamientos | sin intervención manual; costo −30 % vs sugerir la media; 1 promoción usada en 15 s |
+| `scripts/prueba_resiliencia.py` | MLflow caído, reentrenamiento que falla, reinicio | degradado en 12 s, ok en 15 s, modelo intacto, reinicio en 47 s |
 
 **Pregunta:** ¿qué pasaría si la API no guardara una copia local del modelo y MLflow estuviera
 caído justo al reiniciar?

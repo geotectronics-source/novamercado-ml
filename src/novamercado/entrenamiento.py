@@ -22,7 +22,7 @@ import pandas as pd
 from .catalogos import Catalogos
 from .costos import calibrar_multiplicadores, metricas
 from .features import construir_features
-from .modelo import Baseline, ModeloLGBM, Pronosticador
+from .modelo import Baseline, ModeloEnsamble, ModeloLGBM, ModeloLogLineal, Pronosticador
 
 DIAS_VALIDACION = 28
 DIAS_CALIBRACION = 56
@@ -71,7 +71,7 @@ def evaluar(modelo: Pronosticador, X_val: pd.DataFrame, costos) -> tuple[dict, p
 
 def entrenar_candidatos(datos: pd.DataFrame, cat: Catalogos, semilla: int = 42,
                         features: pd.DataFrame | None = None) -> tuple[dict[str, ResultadoCandidato], Ventanas, pd.DataFrame]:
-    """Entrena baseline y LightGBM con el protocolo descrito arriba."""
+    """Entrena baseline, LightGBM y el ensamble LightGBM + log-lineal con el protocolo descrito arriba."""
     costos = cat.costos_dict()
     X = construir_features(datos, cat) if features is None else features
     v = definir_ventanas(X)
@@ -98,4 +98,12 @@ def entrenar_candidatos(datos: pd.DataFrame, cat: Catalogos, semilla: int = 42,
     modelo_b = ModeloLGBM(multiplicadores=k, metadatos=dict(metadatos)).ajustar(tr_b, semilla=semilla)
     m, df_val = evaluar(modelo_b, val, costos)
     resultados[modelo_b.nombre] = ResultadoCandidato(modelo_b, m, df_val)
+
+    # ---- Ensamble LightGBM + log-lineal (reutiliza los LightGBM A y B ya entrenados)
+    ens_a = ModeloEnsamble(lgbm=modelo_a, loglineal=ModeloLogLineal().ajustar(tr_a))
+    _, df_cal = evaluar(ens_a, cal, costos)
+    ens_b = ModeloEnsamble(lgbm=modelo_b, loglineal=ModeloLogLineal().ajustar(tr_b),
+                           multiplicadores=calibrar_multiplicadores(df_cal, costos), metadatos=dict(metadatos))
+    m, df_val = evaluar(ens_b, val, costos)
+    resultados[ens_b.nombre] = ResultadoCandidato(ens_b, m, df_val)
     return resultados, v, X

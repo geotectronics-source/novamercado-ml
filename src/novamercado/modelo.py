@@ -6,8 +6,10 @@
   ventas / nivel_reciente. Predecir un cociente hace al modelo robusto a cambios de nivel
   de la demanda: si una tienda crece 20 %, el nivel reciente lo refleja y el árbol no
   necesita extrapolar.
+* ``ModeloLogLineal``: regresión log-lineal regularizada (modelo multiplicativo con interacciones).
+* ``ModeloEnsamble``: promedio geométrico de LightGBM y log-lineal (retador en cada reentrenamiento).
 
-Ambos producen ``esperado`` y, con los multiplicadores calibrados por costo, la
+Todos producen ``esperado`` y, con los multiplicadores calibrados por costo, la
 ``cantidad_sugerida``. El objeto completo se guarda en MLflow como modelo *pyfunc*.
 """
 from __future__ import annotations
@@ -99,3 +101,101 @@ class ModeloLGBM(Pronosticador):
         e = np.maximum(cociente, 0) * X["base"].values
         # Si no hay nivel conocido, no hay pronóstico posible: respaldo al baseline.
         return np.where(np.isfinite(e), e, _respaldo(X, "media_dow", "base"))
+
+
+# --------------------------------------------------------------------------- modelo log-lineal
+# Interacciones categóricas que el análisis de datos mostró relevantes (docs/ANALISIS_MODELOS.md):
+# el patrón semanal cambia por tipo de tienda y familia, el día del mes por tipo de tienda, etc.
+INTERACCIONES = {
+    "serie": ["tienda_id", "familia_id"],
+    "tipo_fam_dow": ["tipo_tienda", "familia_id", "dow"],
+    "tienda_dow": ["tienda_id", "dow"],
+    "tipo_dia_mes": ["tipo_tienda", "dia_mes"],
+    "fam_mes": ["familia_id", "mes"],
+    "fam_feriado": ["familia_id", "es_feriado"],
+    "fam_comercial": ["familia_id", "es_comercial"],
+    "fam_pago": ["familia_id", "es_pago"],
+    "fam_medio_dia": ["familia_id", "es_medio_dia"],
+    "dias_a_feriado": ["dias_a_feriado"],
+    "dias_desde_feriado": ["dias_desde_feriado"],
+    "fam_promo_sn": ["familia_id", "promo_sn"],
+}
+RELATIVAS_LOG = ["rel_media_dow", "rel_lag1", "rel_media7", "estacional_anual"]
+
+
+def _diseno_categorico(X: pd.DataFrame) -> pd.DataFrame:
+    p = X["en_promocion"]
+    columnas = {c: X[c].astype(str).values for c in {c for cs in INTERACCIONES.values() for c in cs} if c in X}
+    # promoción desconocida (días observados sin solicitud) es su propia categoría
+    columnas["promo_sn"] = np.where(p.isna(), "?", np.where(p.fillna(0) > 0, "1", "0"))
+    d = {}
+    for nombre, cols in INTERACCIONES.items():
+        valor = columnas[cols[0]].astype(object)
+        for c in cols[1:]:
+            valor = valor + "|" + columnas[c]
+        d[nombre] = valor
+    return pd.DataFrame(d, index=X.index)
+
+
+@dataclass
+class ModeloLogLineal(Pronosticador):
+    """Regresión log-lineal regularizada (Ridge) = modelo multiplicativo:
+
+        log(1 + ventas) − log(1 + nivel) = Σ efectos(tienda×familia, tipo×familia×día, …)
+                                          + Σ_f β_f · log(1 + promoción) + rezagos relativos (log)
+
+    Al ser lineal en escala log, **extrapola** efectos (promociones, cambios de nivel) que los
+    árboles no pueden; por eso complementa bien a LightGBM en el ensamble.
+    """
+    nombre: str = "loglineal_ridge"
+    alpha: float = 3.0
+    codificador: object = None
+    regresion: object = None
+    varianza_residual: float = 0.0
+    familias: list = field(default_factory=list)
+
+    def _matriz(self, X: pd.DataFrame):
+        from scipy import sparse
+
+        fam = X["familia_id"].astype(str).values
+        promo = np.log1p(X["en_promocion"].fillna(0).values)
+        numericas = [promo * (fam == f) for f in self.familias]  # pendiente de promoción por familia
+        for c in RELATIVAS_LOG:
+            numericas += [np.log(X[c].clip(0.05, 20)).fillna(0).values, X[c].isna().astype(float).values]
+        return sparse.hstack([self.codificador.transform(_diseno_categorico(X)),
+                              sparse.csr_matrix(np.column_stack(numericas))]).tocsr()
+
+    def ajustar(self, X: pd.DataFrame) -> "ModeloLogLineal":
+        from sklearn.linear_model import Ridge
+        from sklearn.preprocessing import OneHotEncoder
+
+        X = X[X["ventas"].notna() & (X["base"] > 0)]
+        self.familias = sorted(X["familia_id"].astype(str).unique())
+        self.codificador = OneHotEncoder(handle_unknown="ignore", min_frequency=5).fit(_diseno_categorico(X))
+        y = np.log1p(X["ventas"].values) - np.log1p(X["base"].values)
+        M = self._matriz(X)
+        self.regresion = Ridge(alpha=self.alpha).fit(M, y, sample_weight=np.sqrt(X["base"].values))
+        self.varianza_residual = float(np.var(y - self.regresion.predict(M)))
+        return self
+
+    def esperado(self, X: pd.DataFrame) -> np.ndarray:
+        log_pred = self.regresion.predict(self._matriz(X)) + np.log1p(X["base"].values)
+        e = np.expm1(log_pred + self.varianza_residual / 2)  # corrección de sesgo log-normal
+        return np.where(np.isfinite(e), np.maximum(e, 0), _respaldo(X, "media_dow", "base"))
+
+
+@dataclass
+class ModeloEnsamble(Pronosticador):
+    """Promedio geométrico de LightGBM (no lineal) y log-lineal (extrapola).
+
+    Combina dos modelos de naturaleza distinta: en el backtest ganó en los cortes de diciembre
+    y del periodo más reciente (docs/ANALISIS_MODELOS.md). Tiene sus propios multiplicadores.
+    """
+    nombre: str = "ensamble_lgbm_loglineal"
+    lgbm: ModeloLGBM | None = None
+    loglineal: ModeloLogLineal | None = None
+
+    def esperado(self, X: pd.DataFrame) -> np.ndarray:
+        a = np.maximum(self.lgbm.esperado(X), 0)
+        b = np.maximum(self.loglineal.esperado(X), 0)
+        return np.sqrt(a * b)

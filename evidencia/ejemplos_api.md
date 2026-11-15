@@ -10,24 +10,24 @@ Generado con `scripts/generar_evidencia.py` contra el producto levantado con Doc
 {
   "tienda_id": 5,
   "fecha": "2025-11-17",
-  "version_modelo": "2",
+  "version_modelo": "3",
   "predicciones": [
     {
       "familia_id": "abarrotes",
-      "venta_esperada": 975.57,
-      "cantidad_sugerida": 1146,
+      "venta_esperada": 1046.5,
+      "cantidad_sugerida": 1224,
       "promocion_supuesta": false
     },
     {
       "familia_id": "bebe",
-      "venta_esperada": 63.48,
-      "cantidad_sugerida": 83,
+      "venta_esperada": 68.72,
+      "cantidad_sugerida": 88,
       "promocion_supuesta": false
     },
     {
       "familia_id": "bebidas",
-      "venta_esperada": 1053.12,
-      "cantidad_sugerida": 1285,
+      "venta_esperada": 1003.32,
+      "cantidad_sugerida": 1214,
       "promocion_supuesta": false
     },
     "... (9 más)"
@@ -47,24 +47,24 @@ Generado con `scripts/generar_evidencia.py` contra el producto levantado con Doc
 {
   "tienda_id": 5,
   "fecha": "2025-11-17",
-  "version_modelo": "2",
+  "version_modelo": "3",
   "predicciones": [
     {
       "familia_id": "abarrotes",
-      "venta_esperada": 975.57,
-      "cantidad_sugerida": 1146,
+      "venta_esperada": 1046.5,
+      "cantidad_sugerida": 1224,
       "promocion_supuesta": false
     },
     {
       "familia_id": "bebe",
-      "venta_esperada": 63.48,
-      "cantidad_sugerida": 83,
+      "venta_esperada": 68.72,
+      "cantidad_sugerida": 88,
       "promocion_supuesta": false
     },
     {
       "familia_id": "bebidas",
-      "venta_esperada": 1053.12,
-      "cantidad_sugerida": 1285,
+      "venta_esperada": 1003.32,
+      "cantidad_sugerida": 1214,
       "promocion_supuesta": false
     },
     "... (9 más)"
@@ -90,24 +90,24 @@ Generado con `scripts/generar_evidencia.py` contra el producto levantado con Doc
 {
   "tienda_id": 5,
   "fecha": "2025-11-17",
-  "version_modelo": "2",
+  "version_modelo": "3",
   "predicciones": [
     {
       "familia_id": "abarrotes",
-      "venta_esperada": 975.57,
-      "cantidad_sugerida": 1146,
+      "venta_esperada": 1046.5,
+      "cantidad_sugerida": 1224,
       "promocion_supuesta": false
     },
     {
       "familia_id": "bebe",
-      "venta_esperada": 63.48,
-      "cantidad_sugerida": 83,
+      "venta_esperada": 68.72,
+      "cantidad_sugerida": 88,
       "promocion_supuesta": false
     },
     {
       "familia_id": "bebidas",
-      "venta_esperada": 1053.12,
-      "cantidad_sugerida": 1285,
+      "venta_esperada": 1003.32,
+      "cantidad_sugerida": 1214,
       "promocion_supuesta": false
     },
     "... (9 más)"
@@ -138,24 +138,24 @@ Generado con `scripts/generar_evidencia.py` contra el producto levantado con Doc
 {
   "tienda_id": 5,
   "fecha": "2025-11-17",
-  "version_modelo": "2",
+  "version_modelo": "3",
   "predicciones": [
     {
       "familia_id": "abarrotes",
-      "venta_esperada": 975.57,
-      "cantidad_sugerida": 1146,
+      "venta_esperada": 1046.5,
+      "cantidad_sugerida": 1224,
       "promocion_supuesta": false
     },
     {
       "familia_id": "bebe",
-      "venta_esperada": 63.48,
-      "cantidad_sugerida": 83,
+      "venta_esperada": 68.72,
+      "cantidad_sugerida": 88,
       "promocion_supuesta": false
     },
     {
       "familia_id": "bebidas",
-      "venta_esperada": 1053.12,
-      "cantidad_sugerida": 1285,
+      "venta_esperada": 1003.32,
+      "cantidad_sugerida": 1214,
       "promocion_supuesta": false
     },
     "... (9 más)"
@@ -186,24 +186,24 @@ Generado con `scripts/generar_evidencia.py` contra el producto levantado con Doc
 {
   "tienda_id": 5,
   "fecha": "2025-11-17",
-  "version_modelo": "2",
+  "version_modelo": "3",
   "predicciones": [
     {
       "familia_id": "abarrotes",
-      "venta_esperada": 975.57,
-      "cantidad_sugerida": 1146,
+      "venta_esperada": 1046.5,
+      "cantidad_sugerida": 1224,
       "promocion_supuesta": false
     },
     {
       "familia_id": "bebe",
-      "venta_esperada": 63.48,
-      "cantidad_sugerida": 83,
+      "venta_esperada": 68.72,
+      "cantidad_sugerida": 88,
       "promocion_supuesta": false
     },
     {
       "familia_id": "bebidas",
-      "venta_esperada": 1053.12,
-      "cantidad_sugerida": 1285,
+      "venta_esperada": 1003.32,
+      "cantidad_sugerida": 1214,
       "promocion_supuesta": false
     },
     "... (9 más)"
@@ -229,24 +229,24 @@ Generado con `scripts/generar_evidencia.py` contra el producto levantado con Doc
 {
   "tienda_id": 5,
   "fecha": "2025-11-17",
-  "version_modelo": "2",
+  "version_modelo": "3",
   "predicciones": [
     {
       "familia_id": "abarrotes",
-      "venta_esperada": 975.57,
-      "cantidad_sugerida": 1146,
+      "venta_esperada": 1046.5,
+      "cantidad_sugerida": 1224,
       "promocion_supuesta": false
     },
     {
       "familia_id": "bebidas",
-      "venta_esperada": 1053.12,
-      "cantidad_sugerida": 1285,
+      "venta_esperada": 1003.32,
+      "cantidad_sugerida": 1214,
       "promocion_supuesta": false
     },
     {
       "familia_id": "carnes",
-      "venta_esperada": 200.87,
-      "cantidad_sugerida": 187,
+      "venta_esperada": 224.18,
+      "cantidad_sugerida": 204,
       "promocion_supuesta": false
     },
     "... (9 más)"
@@ -272,24 +272,24 @@ Generado con `scripts/generar_evidencia.py` contra el producto levantado con Doc
 {
   "tienda_id": 5,
   "fecha": "2025-11-17",
-  "version_modelo": "2",
+  "version_modelo": "3",
   "predicciones": [
     {
       "familia_id": "abarrotes",
-      "venta_esperada": 1148.46,
-      "cantidad_sugerida": 1349,
+      "venta_esperada": 1227.71,
+      "cantidad_sugerida": 1436,
       "promocion_supuesta": false
     },
     {
       "familia_id": "bebe",
-      "venta_esperada": 63.48,
-      "cantidad_sugerida": 83,
+      "venta_esperada": 68.72,
+      "cantidad_sugerida": 88,
       "promocion_supuesta": false
     },
     {
       "familia_id": "bebidas",
-      "venta_esperada": 1053.12,
-      "cantidad_sugerida": 1285,
+      "venta_esperada": 1003.32,
+      "cantidad_sugerida": 1214,
       "promocion_supuesta": false
     },
     "... (9 más)"
@@ -315,24 +315,24 @@ Generado con `scripts/generar_evidencia.py` contra el producto levantado con Doc
 {
   "tienda_id": 5,
   "fecha": "2025-11-17",
-  "version_modelo": "2",
+  "version_modelo": "3",
   "predicciones": [
     {
       "familia_id": "abarrotes",
-      "venta_esperada": 975.57,
-      "cantidad_sugerida": 1146,
+      "venta_esperada": 1046.5,
+      "cantidad_sugerida": 1224,
       "promocion_supuesta": false
     },
     {
       "familia_id": "bebe",
-      "venta_esperada": 63.48,
-      "cantidad_sugerida": 83,
+      "venta_esperada": 68.72,
+      "cantidad_sugerida": 88,
       "promocion_supuesta": false
     },
     {
       "familia_id": "bebidas",
-      "venta_esperada": 1053.12,
-      "cantidad_sugerida": 1285,
+      "venta_esperada": 1003.32,
+      "cantidad_sugerida": 1214,
       "promocion_supuesta": false
     },
     "... (9 más)"
@@ -458,24 +458,24 @@ Respuesta **HTTP 200**:
 {
   "tienda_id": 2,
   "fecha": "2026-03-02",
-  "version_modelo": "2",
+  "version_modelo": "3",
   "predicciones": [
     {
       "familia_id": "lacteos",
-      "venta_esperada": 269.77,
-      "cantidad_sugerida": 251,
+      "venta_esperada": 251.89,
+      "cantidad_sugerida": 238,
       "promocion_supuesta": false
     },
     {
       "familia_id": "bebidas",
-      "venta_esperada": 363.86,
-      "cantidad_sugerida": 448,
+      "venta_esperada": 348.65,
+      "cantidad_sugerida": 418,
       "promocion_supuesta": false
     },
     {
       "familia_id": "snacks",
-      "venta_esperada": 188.03,
-      "cantidad_sugerida": 218,
+      "venta_esperada": 188.69,
+      "cantidad_sugerida": 223,
       "promocion_supuesta": false
     },
     "... (9 más)"
@@ -562,24 +562,24 @@ Respuesta **HTTP 200**:
 {
   "tienda_id": 7,
   "fecha": "2026-04-03",
-  "version_modelo": "2",
+  "version_modelo": "3",
   "predicciones": [
     {
       "familia_id": "carnes",
-      "venta_esperada": 167.91,
-      "cantidad_sugerida": 161,
+      "venta_esperada": 156.89,
+      "cantidad_sugerida": 145,
       "promocion_supuesta": true
     },
     {
       "familia_id": "abarrotes",
-      "venta_esperada": 673.79,
-      "cantidad_sugerida": 822,
+      "venta_esperada": 613.12,
+      "cantidad_sugerida": 733,
       "promocion_supuesta": false
     },
     {
       "familia_id": "bebe",
-      "venta_esperada": 37.67,
-      "cantidad_sugerida": 48,
+      "venta_esperada": 34.58,
+      "cantidad_sugerida": 44,
       "promocion_supuesta": true
     },
     "... (9 más)"
@@ -632,24 +632,24 @@ Respuesta **HTTP 200**:
 {
   "tienda_id": 1,
   "fecha": "2026-03-02",
-  "version_modelo": "2",
+  "version_modelo": "3",
   "predicciones": [
     {
       "familia_id": "licores",
-      "venta_esperada": 81.56,
-      "cantidad_sugerida": 128,
+      "venta_esperada": 74.78,
+      "cantidad_sugerida": 118,
       "promocion_supuesta": false
     },
     {
       "familia_id": "abarrotes",
-      "venta_esperada": 550.35,
-      "cantidad_sugerida": 647,
+      "venta_esperada": 544.7,
+      "cantidad_sugerida": 637,
       "promocion_supuesta": true
     },
     {
       "familia_id": "bebe",
-      "venta_esperada": 64.32,
-      "cantidad_sugerida": 85,
+      "venta_esperada": 67.32,
+      "cantidad_sugerida": 86,
       "promocion_supuesta": true
     },
     "... (9 más)"
@@ -748,7 +748,7 @@ Respuesta **HTTP 422**:
 {
   "nombre": "novamercado_pronostico_ventas",
   "alias": "vigente",
-  "version": "2"
+  "version": "3"
 }
 ```
 
@@ -761,7 +761,7 @@ Respuesta **HTTP 422**:
     "base_datos": "ok",
     "mlflow": "ok",
     "airflow": "ok",
-    "modelo": "v2"
+    "modelo": "v3"
   }
 }
 ```

@@ -1,5 +1,5 @@
 {
-  "modelo_antes": "2",
+  "modelo_antes": "3",
   "segundos_hasta_degradado": 12.1,
   "health_degradado": {
     "estado": "degradado",
@@ -9,27 +9,27 @@
       "base_datos": "ok",
       "mlflow": "no disponible (ConnectionError)",
       "airflow": "ok",
-      "modelo": "v2"
+      "modelo": "v3"
     }
   },
   "prediccion_con_mlflow_caido": {
     "codigo": 200,
-    "version": "2"
+    "version": "3"
   },
   "reentrenamiento_con_mlflow_caido": {
     "estado": "fallido",
     "promovido": false,
-    "version": "2",
+    "version": "3",
     "motivo": "Falló una tarea del DAG; el modelo vigente no cambió",
-    "duracion_s": 177.5
+    "duracion_s": 187.6
   },
-  "modelo_tras_fallo": "2",
-  "segundos_hasta_ok": 3.1,
-  "reinicio_segundos_hasta_ok": 41.8,
-  "modelo_tras_reinicio": "2",
+  "modelo_tras_fallo": "3",
+  "segundos_hasta_ok": 15.1,
+  "reinicio_segundos_hasta_ok": 46.8,
+  "modelo_tras_reinicio": "3",
   "bootstrap_tras_reinicio": [
     "Datos publicados ya cargados; no se repite la carga.",
-    "Ya existe el modelo vigente v2; no se reentrena."
+    "Ya existe el modelo vigente v3; no se reentrena."
   ],
   "prediccion_tras_reinicio": 200,
   "todas_las_verificaciones_ok": true

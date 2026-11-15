@@ -110,7 +110,7 @@ python scripts/capturas.py                     # capturas de MLflow, Airflow y A
 │   ├── api/              FastAPI (main), lógica de servicio, infraestructura (modelo, monitor, Airflow)
 │   ├── contrato.py       modelos Pydantic del Anexo
 │   ├── features.py       variables (MISMA función para entrenar y servir)
-│   ├── modelo.py         baseline y LightGBM
+│   ├── modelo.py         baseline, LightGBM, log-lineal y ensamble
 │   ├── costos.py         métrica de negocio y cantidad sugerida (newsvendor)
 │   ├── entrenamiento.py  protocolo de ventanas entrenamiento/calibración/validación
 │   ├── ciclo.py          entrenar → registrar → decidir → promover (criterio de reemplazo)

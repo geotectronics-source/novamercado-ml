@@ -113,6 +113,16 @@ Restricciones respetadas:
 |---|---|
 | **Baseline** `baseline_estacional` | Media del mismo día de la semana en las últimas 4 semanas (respaldo: nivel reciente) |
 | **ML** `lightgbm_cociente` | LightGBM global (todas las tiendas y familias) que predice el **cociente** ventas / nivel reciente, ponderado por el nivel; 600 árboles, 63 hojas, `min_data_in_leaf=100` |
+| **ML** `ensamble_lgbm_loglineal` | Promedio geométrico del LightGBM anterior y de una **regresión log-lineal** regularizada (Ridge, α = 3) con interacciones tipo × familia × día de la semana, día del mes × tipo de tienda, promoción (log) por familia, feriados y mes por familia |
+
+**Los tres compiten en cada entrenamiento.** Se registra como versión candidata el de menor
+costo en validación, y luego el criterio de reemplazo (§5) lo compara con el vigente. El
+ensamble se agregó tras el análisis de [`docs/ANALISIS_MODELOS.md`](docs/ANALISIS_MODELOS.md):
+* la parte lineal **extrapola** efectos (promociones, niveles) que los árboles no pueden, lo que
+  da robustez ante cambios de demanda;
+* ganó en los dos cortes más exigentes (diciembre y el más reciente);
+* en promedio queda a 0,9 % del LightGBM solo, así que el sistema elige en cada momento el que
+  mejor funcione en lugar de fijar uno de antemano.
 
 **¿Por qué predecir un cociente?** Los árboles no extrapolan: si la demanda sube 20 %, un modelo
 de nivel absoluto se queda en los valores que vio. Al expresar el objetivo relativo al nivel
@@ -122,16 +132,18 @@ comportamiento de la demanda**, que el periodo de evaluación puede incluir.
 
 Backtest con origen móvil (validación de 28 días después de cada corte; `scripts/experimento.py`):
 
-| Corte | Costo baseline | Costo LightGBM | WAPE baseline | WAPE LightGBM |
-|---|---:|---:|---:|---:|
-| 2025-06-30 | 101 222 | 87 545 | 0.213 | 0.179 |
-| 2025-09-30 | 102 038 | 88 298 | 0.213 | 0.180 |
-| 2025-12-31 | 167 089 | 118 684 | 0.255 | 0.190 |
-| 2026-02-28 | 112 023 | 89 947 | 0.215 | 0.176 |
-| **Promedio** | **120 593** | **96 119 (−20 %)** | 0.224 | 0.181 |
+| Corte | Costo baseline | Costo LightGBM | Costo ensamble | WAPE baseline | WAPE LightGBM | WAPE ensamble |
+|---|---:|---:|---:|---:|---:|---:|
+| 2025-06-30 | 101 222 | **87 545** | 88 985 | 0.213 | 0.179 | 0.181 |
+| 2025-09-30 | 102 038 | **88 298** | 93 210 | 0.213 | 0.180 | 0.183 |
+| 2025-12-31 | 167 089 | 118 684 | **116 626** | 0.255 | 0.190 | 0.188 |
+| 2026-02-28 | 112 023 | 89 947 | **89 109** | 0.215 | 0.176 | 0.177 |
+| **Promedio** | 120 593 | **96 119 (−20 %)** | 96 983 (−20 %) | 0.224 | 0.181 | 0.182 |
 
 Alternativas evaluadas: hojas más pequeñas, tasa de aprendizaje menor y pérdida L1 (diferencias
-< 0.5 % en costo, la L1 fue peor en diciembre). Se descartaron modelos por serie (ARIMA/Prophet:
+< 0.5 % en costo, la L1 fue peor en diciembre); pérdida Tweedie (+1,7 %), log-lineal solo
+(+7,8 %) y optimización directa del costo con pérdida cuantílica (+15 % a +20 %, inestable en
+cuantiles extremos). El detalle está en `docs/ANALISIS_MODELOS.md`. Se descartaron modelos por serie (ARIMA/Prophet:
 120 modelos que mantener, peores con pocas observaciones nuevas) y redes neuronales (más costo
 operativo sin evidencia de mejora con 2 años de datos).
 
@@ -164,7 +176,7 @@ Minimizar el costo empírico equivale a estimar el cuantil τ de la distribució
 
 Coherencia con los costos: donde sobrar es barato (licores) se sugiere 60 % por encima de lo
 esperado; donde sobrar es caro (pan) se sugiere 15 % por debajo. Frente a sugerir la venta
-esperada, el costo baja ~25 % en validación y ~32 % en la simulación de 28 días.
+esperada, el costo baja ~25 % en validación y ~30 % en la simulación de 28 días.
 
 Alternativas: regresión cuantílica con un LightGBM por τ (12 modelos más, mismo resultado
 esperado y más difícil de operar); `media + z·σ` suponiendo normalidad (las ventas son
@@ -206,7 +218,7 @@ operaciones con beneficio dudoso en 28 días) y *re-ajustar con todos los datos 
 (el modelo desplegado no sería el validado y el vigente tendría ventaja dentro de muestra en la
 siguiente comparación).
 
-**Versionado.** Cada reentrenamiento registra dos runs (baseline y LightGBM) y registra como
+**Versionado.** Cada reentrenamiento registra tres runs (baseline, LightGBM y ensamble) y registra como
 versión al mejor de ellos; el alias `vigente` solo se mueve si se cumple el criterio. Un
 reentrenamiento que falla o no supera el criterio **no toca el alias**.
 
@@ -223,7 +235,7 @@ reentrenamiento que falla o no supera el criterio **no toca el alias**.
   la imagen de Airflow: las dependencias del modelo no chocan con las restricciones de Airflow.
 * `GET /admin/reentrenar/{id}` lee la BD del producto y, si sigue en curso, consulta el estado
   en Airflow (si Airflow reporta `failed`, se marca `fallido`).
-* Duración medida: 15–20 s por ejecución (límite 10 min; `dagrun_timeout` = 10 min).
+* Duración medida: ~20 s por ejecución con los tres candidatos (límite 10 min; `dagrun_timeout` = 10 min).
 
 ## 7. Servir el modelo sin reinicio y tolerar fallas
 
@@ -232,7 +244,7 @@ reentrenamiento que falla o no supera el criterio **no toca el alias**.
   después de terminar el DAG (límite: 2 min).
 * **MLflow caído:** el modelo está en memoria y además en una **caché en disco** (volumen
   `api-cache`) para poder arrancar aunque MLflow no esté. Un monitor revisa MLflow y Airflow
-  cada 15 s: `/health` pasó a `degradado` en 12 s y volvió a `ok` en 18 s.
+  cada 15 s: `/health` pasó a `degradado` en 12 s y volvió a `ok` en 3–18 s (según la corrida).
 * **`/health`:** `ok` si API, BD, MLflow, Airflow y modelo están bien; `degradado` + `motivo`
   si alguna dependencia falla pero se puede responder; 503 mientras no hay modelo.
 * **Arranque e idempotencia:** el `bootstrap` usa un *advisory lock* para crear el esquema, solo

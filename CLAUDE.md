@@ -21,7 +21,7 @@ python scripts/prueba_resiliencia.py               # caída de MLflow y reinicio
   (nombres de campos), `prediccion.py` / `observaciones.py` (políticas). Cada acción va al
   `Reporte` como `reparar` o `advertir`; rechazar = lanzar `Rechazo` (→ 422).
 * `features.py` — **una sola función** para entrenar y servir. Solo datos anteriores a la fecha.
-* `modelo.py`, `costos.py`, `entrenamiento.py`, `ciclo.py` — modelo, métrica de costo,
+* `modelo.py` (baseline, LightGBM, log-lineal, ensamble), `costos.py`, `entrenamiento.py`, `ciclo.py` — modelos, métrica de costo,
   protocolo de ventanas y criterio de reemplazo.
 * `registro.py` — MLflow. `db.py` — PostgreSQL. `cli.py` — bootstrap y pasos del DAG.
 * `api/main.py` (HTTP), `api/servicio.py` (lógica), `api/infraestructura.py` (recarga del

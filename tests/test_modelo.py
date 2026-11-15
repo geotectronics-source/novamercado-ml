@@ -54,12 +54,41 @@ def test_sugerido_entero_no_negativo():
     assert s.tolist() == [0, 0, 8, 0] and s.dtype.kind == "i"
 
 
-def test_lightgbm_mejora_al_baseline_en_datos_sinteticos(cat):
-    res, ventanas, _ = entrenar_candidatos(historia_sintetica(cat), cat)
-    assert set(res) == {"baseline_estacional", "lightgbm_cociente"}
+@pytest.fixture(scope="module")
+def candidatos(cat):
+    return entrenar_candidatos(historia_sintetica(cat), cat)
+
+
+def test_entrena_los_tres_candidatos(candidatos):
+    res, ventanas, _ = candidatos
+    assert set(res) == {"baseline_estacional", "lightgbm_cociente", "ensamble_lgbm_loglineal"}
     for r in res.values():
         assert np.isfinite(r.metricas_validacion["costo_total"])
+        assert r.modelo.multiplicadores  # cada candidato calibra su propia cantidad sugerida
     assert ventanas.fin_validacion == pd.Timestamp("2025-12-31")
+
+
+def test_ensamble_es_promedio_geometrico(candidatos):
+    res, _, X = candidatos
+    ens = res["ensamble_lgbm_loglineal"].modelo
+    filas = X[X["fecha"] == "2025-12-20"]
+    a, b, e = ens.lgbm.esperado(filas), ens.loglineal.esperado(filas), ens.esperado(filas)
+    np.testing.assert_allclose(e, np.sqrt(a * b))
+    assert (np.minimum(a, b) - 1e-9 <= e).all() and (e <= np.maximum(a, b) + 1e-9).all()
+
+
+def test_ensamble_en_la_ruta_de_servicio(cat, candidatos):
+    """Igual que la API: historia de una tienda (sin promociones) + 12 filas objetivo."""
+    res, _, _ = candidatos
+    ens = res["ensamble_lgbm_loglineal"].modelo
+    h = historia_sintetica(cat)
+    h = h[(h["tienda_id"] == 5) & (h["fecha"] < "2026-01-05")].assign(en_promocion=np.nan)
+    obj = pd.DataFrame({"fecha": pd.Timestamp("2026-01-05"), "tienda_id": 5, "familia_id": cat.ids_familias,
+                        "en_promocion": 2.0, "ventas": np.nan})
+    X = construir_features(pd.concat([h, obj], ignore_index=True), cat)
+    pred = ens.predecir(X[X["fecha"] == "2026-01-05"])
+    assert len(pred) == 12 and np.isfinite(pred["venta_esperada"]).all()
+    assert (pred["cantidad_sugerida"] >= 0).all() and pred["cantidad_sugerida"].dtype.kind == "i"
 
 
 @pytest.mark.parametrize("costo_cand, costo_vig, promueve", [(90.0, 100.0, True), (99.5, 100.0, False),

@@ -17,7 +17,7 @@ from mlflow.tracking import MlflowClient
 from .config import Config
 from .modelo import Pronosticador
 
-REQUISITOS_MODELO = ["pandas==2.2.3", "numpy==1.26.4", "lightgbm==4.5.0"]
+REQUISITOS_MODELO = ["pandas==2.2.3", "numpy==1.26.4", "lightgbm==4.5.0", "scikit-learn==1.5.2", "scipy==1.17.1"]
 
 
 class ModeloPyfunc(mlflow.pyfunc.PythonModel):

@@ -34,7 +34,9 @@ def _miles(x: float) -> str:
 
 
 def entrenar_y_registrar(datos: pd.DataFrame, cat: Catalogos, cfg: Config, origen: str) -> dict:
-    """Entrena baseline y LightGBM, registra ambos runs y registra como versión al mejor."""
+    """Entrena los candidatos (baseline, LightGBM y ensamble), registra un run por cada uno y
+    registra como versión al de menor costo en validación; luego ``decidir`` lo compara con el
+    vigente."""
     resultados, ventanas, X = entrenar_candidatos(datos, cat)
     n_obs = int(datos.attrs.get("n_observaciones", 0))
     comunes = {"fecha_max_datos": str(datos["fecha"].max().date()), "n_filas_datos": len(datos),
@@ -42,8 +44,11 @@ def entrenar_y_registrar(datos: pd.DataFrame, cat: Catalogos, cfg: Config, orige
     runs = {}
     for nombre, r in resultados.items():
         params = {"modelo": nombre, **comunes}
-        if hasattr(r.modelo, "params"):
-            params.update({f"lgbm_{k}": v for k, v in r.modelo.params.items()} | {"lgbm_n_arboles": r.modelo.n_arboles})
+        lgbm = getattr(r.modelo, "lgbm", None) or (r.modelo if hasattr(r.modelo, "params") else None)
+        if lgbm is not None:
+            params.update({f"lgbm_{k}": v for k, v in lgbm.params.items()} | {"lgbm_n_arboles": lgbm.n_arboles})
+        if getattr(r.modelo, "loglineal", None) is not None:
+            params["loglineal_alpha_ridge"] = r.modelo.loglineal.alpha
         runs[nombre] = registro.registrar_run(
             cfg, f"{origen}_{nombre}", r.modelo, r.metricas_validacion, params,
             etiquetas={"origen": origen, "tipo_modelo": nombre},

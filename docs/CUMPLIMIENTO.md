@@ -4,6 +4,9 @@ Cada requisito del enunciado, dónde se implementa y cómo se verificó. Las med
 hicieron sobre un **clon limpio del repositorio**, levantado desde cero con la carpeta de
 datos copiada tal como se publicó (`datos/datos_lab2/…`), igual que lo hará el evaluador.
 
+Tras integrar el ensamble LightGBM + log-lineal, el producto se volvió a levantar desde cero y
+se repitieron la simulación, la prueba de resiliencia, la evidencia y las capturas.
+
 Leyenda: ✅ cumple y está verificado.
 
 ## Descripción del producto
@@ -14,7 +17,7 @@ Leyenda: ✅ cumple y está verificado.
 | P2 | Defensa del contrato: reparar / advertir / rechazar e informar qué hizo y por qué | ✅ | `calidad/` | `tests/test_calidad.py`, `ejemplos_api.md` (E01–E10 + N01–N06) |
 | P3 | Registro de predicciones y observaciones con la versión del modelo | ✅ | `db.py` (`predicciones.version_modelo`, `observaciones`) | `evidencia/base_datos.json` |
 | P4 | Reentrenamiento con lo registrado, criterio explícito y uso del nuevo modelo sin reinicio | ✅ | `ciclo.py`, `dags/`, `api/infraestructura.py::GestorModelo` | `simulacion.json` (modelo nuevo en uso en ≤ 15 s) |
-| P5 | Cantidad sugerida evaluada con `costos.csv` (costo asimétrico por familia) | ✅ | `costos.py` | DECISIONES §4; `simulacion.json` (−32 % vs sugerir la media) |
+| P5 | Cantidad sugerida evaluada con `costos.csv` (costo asimétrico por familia) | ✅ | `costos.py` | DECISIONES §4; `simulacion.json` (−30 % vs sugerir la media) |
 
 ## Datos
 
@@ -44,13 +47,13 @@ Leyenda: ✅ cumple y está verificado.
 | 2.1 | PostgreSQL propia del producto, en Docker, separada de la de Airflow | ✅ | Servicios `db` y `db-airflow` en `docker-compose.yml` |
 | 2.2 | Registrar solicitudes, predicciones, correcciones y observaciones | ✅ | Tablas `solicitudes`, `predicciones`, `correcciones`, `observaciones`; `base_datos.json` |
 | 2.3 | Observaciones idempotentes | ✅ | `ON CONFLICT … WHERE … IS DISTINCT FROM`; reenvío ⇒ `registros_guardados = 0` (`ejemplos_api.md`, prueba `test_observaciones_idempotentes`) |
-| 2.4 | Conservar la información al detener y volver a levantar | ✅ | Volúmenes nombrados; `down`/`up` y `stop`/`start` verificados (3 232 observaciones y el modelo v2 se conservan) |
+| 2.4 | Conservar la información al detener y volver a levantar | ✅ | Volúmenes nombrados; `down`/`up` y `stop`/`start` verificados (observaciones y modelo vigente se conservan) |
 
 ## 3. Modelado y gestión de modelos con MLflow
 
 | # | Requisito | Estado | Evidencia |
 |---|---|---|---|
-| 3.1 | Baseline simple y al menos un modelo de ML que lo mejore | ✅ | `baseline_estacional` y `lightgbm_cociente`: −20 % de costo en el backtest (DECISIONES §3) |
+| 3.1 | Baseline simple y al menos un modelo de ML que lo mejore | ✅ | `baseline_estacional`, `lightgbm_cociente` y `ensamble_lgbm_loglineal` (LightGBM + log-lineal): −20 % de costo en el backtest (DECISIONES §3, `docs/ANALISIS_MODELOS.md`) |
 | 3.2 | Métrica de negocio con `costos.csv` además de métricas técnicas | ✅ | `costo_total`, `costo_por_dia_tienda` + MAE, RMSE, WAPE, sesgo (`capturas/01b_mlflow_comparacion_metricas.png`) |
 | 3.3 | Cantidad sugerida coherente con los costos | ✅ | Cuantil crítico del *newsvendor* por familia × tipo de tienda (DECISIONES §4) |
 | 3.4 | Experimentos, modelos y linaje en MLflow; vigente identificado con alias | ✅ | Run → versión registrada, con etiquetas (`origen`, `fecha_max_datos`, `costo_validacion`, `decision`, `motivo`); alias `vigente` (`capturas/02_…png`, `mlflow.json`) |
@@ -62,7 +65,7 @@ Leyenda: ✅ cumple y está verificado.
 |---|---|---|---|
 | 4.1 | DAG que usa el histórico y las observaciones de la BD | ✅ | `dags/reentrenamiento.py` → `cli.dag_preparar` → `db.datos_entrenamiento` |
 | 4.2 | Se dispara con el endpoint de administración; estado consultable | ✅ | `POST /admin/reentrenar` (202 + id), `GET /admin/reentrenar/{id}`; `capturas/05_…png`, `airflow_dag_runs.json` |
-| 4.3 | Usar el modelo promovido sin reinicio en ≤ 2 min | ✅ | Sondeo del alias cada 20 s; medido entre 0 y 15 s |
+| 4.3 | Usar el modelo promovido sin reinicio en ≤ 2 min | ✅ | Sondeo del alias cada 20 s; medido ≤ 15 s |
 | 4.4 | Un reentrenamiento que falla o no supera el criterio no afecta al vigente | ✅ | Falla con MLflow caído ⇒ `fallido` y v2 intacto (`resiliencia.json`); rechazos por criterio (`simulacion.json`) |
 
 ## 5. Contenedores y operación
@@ -74,9 +77,9 @@ Leyenda: ✅ cumple y está verificado.
 | 5.3 | Al volver a levantarse conserva lo que tiene sin repetir el trabajo | ✅ | Logs del bootstrap: "ya cargados… no se repite", "ya existe el modelo vigente… no se reentrena" |
 | 5.4 | Imágenes con versiones fijas | ✅ | `python:3.12.8-slim-bookworm`, `postgres:16.6-alpine`, `ghcr.io/mlflow/mlflow:v2.19.0`, `apache/airflow:2.10.4-python3.12`; dependencias en `requirements/*.txt` |
 | 5.5 | Datos y credenciales fuera de las imágenes y del repositorio; `.env.example` | ✅ | `.gitignore`, `.dockerignore`, `.env.example`; en GitHub, `datos/` solo contiene `LEEME.md` |
-| 5.6 | Con MLflow caído la API sigue respondiendo; `/health` lo refleja en < 1 min y vuelve a ok en < 2 min | ✅ | 12 s y 3 s (`resiliencia.json`) |
-| 5.7 | Listo (`/health` ok) en ≤ 10 min sin contar la construcción | ✅ | 43 s desde cero; 42 s tras `down`/`up`; 30 s tras `stop`/`start` |
-| 5.8 | Cada reentrenamiento termina en ≤ 10 min | ✅ | 15–20 s (183 s el que falla con MLflow caído); `dagrun_timeout` de 10 min |
+| 5.6 | Con MLflow caído la API sigue respondiendo; `/health` lo refleja en < 1 min y vuelve a ok en < 2 min | ✅ | 12 s y 3–15 s (`resiliencia.json`) |
+| 5.7 | Listo (`/health` ok) en ≤ 10 min sin contar la construcción | ✅ | 43–45 s desde cero; 42–47 s tras `down`/`up`; 30 s tras `stop`/`start` |
+| 5.8 | Cada reentrenamiento termina en ≤ 10 min | ✅ | ~20 s con tres candidatos (≈ 3 min el que falla con MLflow caído); `dagrun_timeout` de 10 min |
 
 ## 6. Documentación y decisiones
 
