@@ -6,7 +6,7 @@
       "runs": [
         {
           "nombre": "bootstrap_baseline_estacional",
-          "run_id": "1bacd62c40094cac95af3b3b5126574e",
+          "run_id": "826e28600df54bab8cd5a9a1998b22c1",
           "metricas": {
             "costo_total": 112022.6,
             "costo_sugerir_media": 143795.2,
@@ -21,7 +21,7 @@
         },
         {
           "nombre": "bootstrap_lightgbm_cociente",
-          "run_id": "9a2cb43859e44777a071f9a90b3e1051",
+          "run_id": "ede2bb3db22d49cc95c5513c4ed6d503",
           "metricas": {
             "costo_total": 89947.0,
             "costo_sugerir_media": 119144.6,
@@ -35,8 +35,8 @@
           }
         },
         {
-          "nombre": "reentrenamiento_reent_20261114T190818_168440_baseline_estacional",
-          "run_id": "f8da34db871446b7876bde3f52427128",
+          "nombre": "reentrenamiento_reent_20261115T002104_173cd1_baseline_estacional",
+          "run_id": "3568be230a6d49a28c9a24b551232e15",
           "metricas": {
             "costo_total": 109241.1,
             "costo_sugerir_media": 140840.9,
@@ -45,13 +45,13 @@
             "sesgo_pct": -0.0246
           },
           "etiquetas": {
-            "origen": "reentrenamiento_reent_20261114T190818_168440",
+            "origen": "reentrenamiento_reent_20261115T002104_173cd1",
             "tipo_modelo": "baseline_estacional"
           }
         },
         {
-          "nombre": "reentrenamiento_reent_20261114T190818_168440_lightgbm_cociente",
-          "run_id": "c536460a731f4e6db600e609a4ea7de7",
+          "nombre": "reentrenamiento_reent_20261115T002104_173cd1_lightgbm_cociente",
+          "run_id": "b9b8b88f3ed04c478da8e2278b01dffe",
           "metricas": {
             "costo_total": 88095.4,
             "costo_sugerir_media": 115634.6,
@@ -60,13 +60,13 @@
             "sesgo_pct": 0.0014
           },
           "etiquetas": {
-            "origen": "reentrenamiento_reent_20261114T190818_168440",
+            "origen": "reentrenamiento_reent_20261115T002104_173cd1",
             "tipo_modelo": "lightgbm_cociente"
           }
         },
         {
-          "nombre": "reentrenamiento_reent_20261114T190859_32e628_baseline_estacional",
-          "run_id": "83faa934c9fc4357a25ffa213506905a",
+          "nombre": "reentrenamiento_reent_20261115T002135_08c5a2_baseline_estacional",
+          "run_id": "7836a983c5a84e1294f8f1d89fa3a6ee",
           "metricas": {
             "costo_total": 115509.6,
             "costo_sugerir_media": 157694.7,
@@ -75,13 +75,13 @@
             "sesgo_pct": -0.0324
           },
           "etiquetas": {
-            "origen": "reentrenamiento_reent_20261114T190859_32e628",
+            "origen": "reentrenamiento_reent_20261115T002135_08c5a2",
             "tipo_modelo": "baseline_estacional"
           }
         },
         {
-          "nombre": "reentrenamiento_reent_20261114T190859_32e628_lightgbm_cociente",
-          "run_id": "66e55bb8f3fb4fd78fb210713d0a664e",
+          "nombre": "reentrenamiento_reent_20261115T002135_08c5a2_lightgbm_cociente",
+          "run_id": "85bde309780d40008749713059e39128",
           "metricas": {
             "costo_total": 92659.2,
             "costo_sugerir_media": 128971.9,
@@ -90,13 +90,13 @@
             "sesgo_pct": -0.02
           },
           "etiquetas": {
-            "origen": "reentrenamiento_reent_20261114T190859_32e628",
+            "origen": "reentrenamiento_reent_20261115T002135_08c5a2",
             "tipo_modelo": "lightgbm_cociente"
           }
         },
         {
-          "nombre": "reentrenamiento_reent_20261114T190925_3471a2_baseline_estacional",
-          "run_id": "9ab319151f6e4a6793e21c02900e2c34",
+          "nombre": "reentrenamiento_reent_20261115T002201_fad08a_baseline_estacional",
+          "run_id": "2d35caac5a1d4bc6a5dd54f554bf0cfa",
           "metricas": {
             "costo_total": 120688.7,
             "costo_sugerir_media": 174172.4,
@@ -105,13 +105,13 @@
             "sesgo_pct": -0.0352
           },
           "etiquetas": {
-            "origen": "reentrenamiento_reent_20261114T190925_3471a2",
+            "origen": "reentrenamiento_reent_20261115T002201_fad08a",
             "tipo_modelo": "baseline_estacional"
           }
         },
         {
-          "nombre": "reentrenamiento_reent_20261114T190925_3471a2_lightgbm_cociente",
-          "run_id": "0007be64f8814158963b9e8a30624c8b",
+          "nombre": "reentrenamiento_reent_20261115T002201_fad08a_lightgbm_cociente",
+          "run_id": "c3ee2790f7784a9d8f1b9b1eca7fcd5d",
           "metricas": {
             "costo_total": 98923.7,
             "costo_sugerir_media": 143163.6,
@@ -120,13 +120,13 @@
             "sesgo_pct": -0.0325
           },
           "etiquetas": {
-            "origen": "reentrenamiento_reent_20261114T190925_3471a2",
+            "origen": "reentrenamiento_reent_20261115T002201_fad08a",
             "tipo_modelo": "lightgbm_cociente"
           }
         },
         {
-          "nombre": "reentrenamiento_reent_20261114T190956_41fb7f_baseline_estacional",
-          "run_id": "6805de6fc5234e1394383765e2f68edc",
+          "nombre": "reentrenamiento_reent_20261115T002227_4a0629_baseline_estacional",
+          "run_id": "874b6dc978ac4387a4e1e0ee45eadea2",
           "metricas": {
             "costo_total": 127563.1,
             "costo_sugerir_media": 179373.8,
@@ -135,13 +135,13 @@
             "sesgo_pct": -0.04
           },
           "etiquetas": {
-            "origen": "reentrenamiento_reent_20261114T190956_41fb7f",
+            "origen": "reentrenamiento_reent_20261115T002227_4a0629",
             "tipo_modelo": "baseline_estacional"
           }
         },
         {
-          "nombre": "reentrenamiento_reent_20261114T190956_41fb7f_lightgbm_cociente",
-          "run_id": "5f9fa51986cf4554858695fb839de8ce",
+          "nombre": "reentrenamiento_reent_20261115T002227_4a0629_lightgbm_cociente",
+          "run_id": "bc550b52125a45838d72bfa0f02aae18",
           "metricas": {
             "costo_total": 102985.1,
             "costo_sugerir_media": 151911.0,
@@ -150,7 +150,7 @@
             "sesgo_pct": -0.0433
           },
           "etiquetas": {
-            "origen": "reentrenamiento_reent_20261114T190956_41fb7f",
+            "origen": "reentrenamiento_reent_20261115T002227_4a0629",
             "tipo_modelo": "lightgbm_cociente"
           }
         }
@@ -173,7 +173,7 @@
     "versiones": [
       {
         "version": "1",
-        "run_id": "9a2cb43859e44777a071f9a90b3e1051",
+        "run_id": "ede2bb3db22d49cc95c5513c4ed6d503",
         "etiquetas": {
           "origen": "bootstrap",
           "tipo_modelo": "lightgbm_cociente",
@@ -185,9 +185,9 @@
       },
       {
         "version": "2",
-        "run_id": "c536460a731f4e6db600e609a4ea7de7",
+        "run_id": "b9b8b88f3ed04c478da8e2278b01dffe",
         "etiquetas": {
-          "origen": "reentrenamiento_reent_20261114T190818_168440",
+          "origen": "reentrenamiento_reent_20261115T002104_173cd1",
           "tipo_modelo": "lightgbm_cociente",
           "costo_validacion": "88095.4",
           "fecha_max_datos": "2026-03-06",
@@ -197,9 +197,9 @@
       },
       {
         "version": "3",
-        "run_id": "66e55bb8f3fb4fd78fb210713d0a664e",
+        "run_id": "85bde309780d40008749713059e39128",
         "etiquetas": {
-          "origen": "reentrenamiento_reent_20261114T190859_32e628",
+          "origen": "reentrenamiento_reent_20261115T002135_08c5a2",
           "tipo_modelo": "lightgbm_cociente",
           "costo_validacion": "92659.2",
           "fecha_max_datos": "2026-03-13",
@@ -209,9 +209,9 @@
       },
       {
         "version": "4",
-        "run_id": "0007be64f8814158963b9e8a30624c8b",
+        "run_id": "c3ee2790f7784a9d8f1b9b1eca7fcd5d",
         "etiquetas": {
-          "origen": "reentrenamiento_reent_20261114T190925_3471a2",
+          "origen": "reentrenamiento_reent_20261115T002201_fad08a",
           "tipo_modelo": "lightgbm_cociente",
           "costo_validacion": "98923.7",
           "fecha_max_datos": "2026-03-20",
@@ -221,9 +221,9 @@
       },
       {
         "version": "5",
-        "run_id": "5f9fa51986cf4554858695fb839de8ce",
+        "run_id": "bc550b52125a45838d72bfa0f02aae18",
         "etiquetas": {
-          "origen": "reentrenamiento_reent_20261114T190956_41fb7f",
+          "origen": "reentrenamiento_reent_20261115T002227_4a0629",
           "tipo_modelo": "lightgbm_cociente",
           "costo_validacion": "102985.1",
           "fecha_max_datos": "2026-03-27",

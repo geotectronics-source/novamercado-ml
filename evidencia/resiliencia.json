@@ -21,11 +21,11 @@
     "promovido": false,
     "version": "2",
     "motivo": "Falló una tarea del DAG; el modelo vigente no cambió",
-    "duracion_s": 177.8
+    "duracion_s": 177.5
   },
   "modelo_tras_fallo": "2",
-  "segundos_hasta_ok": 3.0,
-  "reinicio_segundos_hasta_ok": 42.0,
+  "segundos_hasta_ok": 3.1,
+  "reinicio_segundos_hasta_ok": 41.8,
   "modelo_tras_reinicio": "2",
   "bootstrap_tras_reinicio": [
     "Datos publicados ya cargados; no se repite la carga.",

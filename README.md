@@ -99,6 +99,7 @@ Pruebas de operación contra el producto levantado (generan archivos en `evidenc
 python scripts/simulador.py --dias 28          # operación diaria simulada + reentrenamientos
 python scripts/prueba_resiliencia.py           # caída de MLflow, reentrenamiento fallido, reinicio
 python scripts/generar_evidencia.py            # ejemplos de API, MLflow, ejecuciones del DAG, BD
+python scripts/capturas.py                     # capturas de MLflow, Airflow y API (requiere playwright y Chrome)
 ```
 
 ## 5. Estructura del repositorio
@@ -122,7 +123,7 @@ python scripts/generar_evidencia.py            # ejemplos de API, MLflow, ejecuc
 ├── tests/                pytest (contrato, calidad, modelo)
 ├── scripts/              experimento, simulador, resiliencia, evidencia
 ├── evidencia/            resultados de las pruebas de operación
-├── docs/                 plan de trabajo y guía paso a paso
+├── docs/                 plan de trabajo, guía paso a paso y matriz de cumplimiento
 ├── datos/                ← aquí van los archivos publicados (no se versionan)
 ├── DECISIONES.md  CLAUDE.md
 ```
@@ -137,5 +138,7 @@ python scripts/generar_evidencia.py            # ejemplos de API, MLflow, ejecuc
 | [`evidencia/simulacion.json`](evidencia/simulacion.json) | 28 días simulados: costo, estados de calidad, reentrenamientos |
 | [`evidencia/resiliencia.json`](evidencia/resiliencia.json) | Caída de MLflow, reentrenamiento fallido y reinicio |
 | [`evidencia/base_datos.json`](evidencia/base_datos.json) | Conteos de solicitudes, predicciones, correcciones y observaciones |
+| [`evidencia/capturas/`](evidencia/README.md) | Capturas de MLflow (runs, métricas, versiones, alias), Airflow (ejecuciones del DAG) y la API |
 
-Las decisiones técnicas y de producto están en [`DECISIONES.md`](DECISIONES.md).
+Las decisiones técnicas y de producto están en [`DECISIONES.md`](DECISIONES.md). La relación
+requisito por requisito con el enunciado está en [`docs/CUMPLIMIENTO.md`](docs/CUMPLIMIENTO.md).
