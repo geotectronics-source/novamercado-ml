@@ -26,3 +26,5 @@ Generada sobre un clon limpio del repositorio, levantado desde cero con `docker 
 | `base_datos.json` | Conteos de solicitudes por estado, predicciones, correcciones y observaciones | `scripts/generar_evidencia.py` |
 | `simulacion.json` | 28 días de operación simulada: costo, calidad y reentrenamientos | `scripts/simulador.py` |
 | `resiliencia.json` | Caída de MLflow, reentrenamiento fallido y reinicio | `scripts/prueba_resiliencia.py` |
+| `comparacion_modelos.csv` | Backtest de 6 modelos alternativos | `scripts/comparar_modelos.py` |
+| `auditoria_codex.md` | Auditoría técnica independiente realizada por Codex (sus hallazgos se atendieron; ver `docs/CUMPLIMIENTO.md`) | Codex |

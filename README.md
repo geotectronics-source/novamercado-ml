@@ -56,7 +56,7 @@ alias `vigente`. La API lo detecta y lo carga sola. En nuestras pruebas, el prod
 en **~45 s** sin contar la construcción de imágenes.
 
 ```bash
-curl http://localhost:8000/health      # {"estado":"ok", ...} cuando está listo (503 mientras no hay modelo)
+curl http://localhost:8000/health      # {"estado":"ok", ...} cuando está listo (503 + "degradado" mientras no hay modelo)
 ```
 
 Al volver a levantarlo (`docker compose down` + `docker compose up -d`, **sin** `-v`) conserva
@@ -140,6 +140,7 @@ python scripts/capturas.py                     # capturas de MLflow, Airflow y A
 | [`evidencia/resiliencia.json`](evidencia/resiliencia.json) | Caída de MLflow, reentrenamiento fallido y reinicio |
 | [`evidencia/base_datos.json`](evidencia/base_datos.json) | Conteos de solicitudes, predicciones, correcciones y observaciones |
 | [`evidencia/capturas/`](evidencia/README.md) | Capturas de MLflow (runs, métricas, versiones, alias), Airflow (ejecuciones del DAG) y la API |
+| [`evidencia/auditoria_codex.md`](evidencia/auditoria_codex.md) | Auditoría técnica independiente (Codex); su atención está en `docs/CUMPLIMIENTO.md` |
 
 Las decisiones técnicas y de producto están en [`DECISIONES.md`](DECISIONES.md). La relación
 requisito por requisito con el enunciado está en [`docs/CUMPLIMIENTO.md`](docs/CUMPLIMIENTO.md).

@@ -1,6 +1,6 @@
 {
   "modelo_antes": "3",
-  "segundos_hasta_degradado": 12.1,
+  "segundos_hasta_degradado": 18.1,
   "health_degradado": {
     "estado": "degradado",
     "motivo": "mlflow: no disponible (ConnectionError)",
@@ -20,12 +20,12 @@
     "estado": "fallido",
     "promovido": false,
     "version": "3",
-    "motivo": "Falló una tarea del DAG; el modelo vigente no cambió",
-    "duracion_s": 187.6
+    "motivo": "dag_preparar: MLflow no está disponible; no se inició el reentrenamiento — el modelo vigente no cambió",
+    "duracion_s": 25.4
   },
   "modelo_tras_fallo": "3",
-  "segundos_hasta_ok": 15.1,
-  "reinicio_segundos_hasta_ok": 46.8,
+  "segundos_hasta_ok": 6.0,
+  "reinicio_segundos_hasta_ok": 48.0,
   "modelo_tras_reinicio": "3",
   "bootstrap_tras_reinicio": [
     "Datos publicados ya cargados; no se repite la carga.",

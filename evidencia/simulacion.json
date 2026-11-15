@@ -13,7 +13,7 @@
       "promovido": false,
       "version": "1",
       "motivo": "Costo en validación 88 095 vs 88 932 del vigente (mejora 0.9%; se exige ≥ 1%)",
-      "duracion_s": 20.3,
+      "duracion_s": 20.6,
       "dia": "2026-03-07",
       "segundos_hasta_usar_modelo": null
     },
@@ -24,7 +24,7 @@
       "motivo": "Costo en validación 92 496 vs 93 732 del vigente (mejora 1.3%; se exige ≥ 1%)",
       "duracion_s": 20.2,
       "dia": "2026-03-14",
-      "segundos_hasta_usar_modelo": 15.0
+      "segundos_hasta_usar_modelo": 20.0
     },
     {
       "estado": "exitoso",
@@ -40,7 +40,7 @@
       "promovido": false,
       "version": "3",
       "motivo": "Costo en validación 100 958 vs 101 170 del vigente (mejora 0.2%; se exige ≥ 1%)",
-      "duracion_s": 20.3,
+      "duracion_s": 20.2,
       "dia": "2026-03-28",
       "segundos_hasta_usar_modelo": null
     }
@@ -48,7 +48,7 @@
   "costo_total": 97912.5,
   "costo_si_se_sugiriera_la_media": 140874.4,
   "wape": 0.1925,
-  "latencia_p95_s": 0.179,
+  "latencia_p95_s": 0.147,
   "costo_por_semana": {
     "9": 3189.1,
     "10": 22047.0,

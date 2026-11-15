@@ -2,10 +2,10 @@
   "dag_id": "reentrenamiento_modelo",
   "ejecuciones": [
     {
-      "dag_run_id": "reent_20261115T020850_ecd0f6",
+      "dag_run_id": "reent_20261115T034207_8ce1db",
       "estado": "success",
-      "inicio": "2026-11-15T02:08:51.416278+00:00",
-      "fin": "2026-11-15T02:09:10.793235+00:00",
+      "inicio": "2026-11-15T03:42:07.865142+00:00",
+      "fin": "2026-11-15T03:42:27.091053+00:00",
       "tareas": {
         "preparar_datos": "success",
         "entrenar_candidato": "success",
@@ -15,10 +15,10 @@
       }
     },
     {
-      "dag_run_id": "reent_20261115T020921_ac7937",
+      "dag_run_id": "reent_20261115T034239_1e84da",
       "estado": "success",
-      "inicio": "2026-11-15T02:09:21.828781+00:00",
-      "fin": "2026-11-15T02:09:42.049848+00:00",
+      "inicio": "2026-11-15T03:42:40.060849+00:00",
+      "fin": "2026-11-15T03:43:00.221543+00:00",
       "tareas": {
         "publicar_resultado": "success",
         "preparar_datos": "success",
@@ -28,10 +28,10 @@
       }
     },
     {
-      "dag_run_id": "reent_20261115T021008_e63bd1",
+      "dag_run_id": "reent_20261115T034330_c66021",
       "estado": "success",
-      "inicio": "2026-11-15T02:10:09.175565+00:00",
-      "fin": "2026-11-15T02:10:29.338309+00:00",
+      "inicio": "2026-11-15T03:43:31.406803+00:00",
+      "fin": "2026-11-15T03:43:51.579522+00:00",
       "tareas": {
         "preparar_datos": "success",
         "evaluar_y_decidir": "success",
@@ -41,10 +41,10 @@
       }
     },
     {
-      "dag_run_id": "reent_20261115T021040_1d3ffc",
+      "dag_run_id": "reent_20261115T034401_a8f20c",
       "estado": "success",
-      "inicio": "2026-11-15T02:10:41.502010+00:00",
-      "fin": "2026-11-15T02:11:01.714202+00:00",
+      "inicio": "2026-11-15T03:44:01.626547+00:00",
+      "fin": "2026-11-15T03:44:21.827818+00:00",
       "tareas": {
         "preparar_datos": "success",
         "entrenar_candidato": "success",
@@ -54,15 +54,15 @@
       }
     },
     {
-      "dag_run_id": "reent_20261115T021118_474229",
+      "dag_run_id": "reent_20261115T034444_2ca10f",
       "estado": "failed",
-      "inicio": "2026-11-15T02:11:18.836702+00:00",
-      "fin": "2026-11-15T02:14:24.213256+00:00",
+      "inicio": "2026-11-15T03:44:44.957019+00:00",
+      "fin": "2026-11-15T03:45:08.208983+00:00",
       "tareas": {
+        "preparar_datos": "failed",
+        "entrenar_candidato": "upstream_failed",
         "evaluar_y_decidir": "upstream_failed",
-        "entrenar_candidato": "failed",
         "publicar_resultado": "upstream_failed",
-        "preparar_datos": "success",
         "marcar_fallo": "failed"
       }
     }

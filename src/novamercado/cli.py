@@ -84,7 +84,22 @@ def _carpeta(run_id: str) -> Path:
     return d
 
 
+def _mlflow_disponible(cfg: Config, intentos: int = 3) -> bool:
+    for i in range(intentos):
+        try:
+            _mlflow_arriba(cfg)
+            return True
+        except requests.RequestException:
+            if i < intentos - 1:
+                time.sleep(2)
+    return False
+
+
 def dag_preparar(cfg: Config, run_id: str) -> None:
+    # Falla rápido: sin MLflow no se puede registrar ni comparar, así que no tiene sentido entrenar
+    # (antes se descubría tras ~3 min de reintentos del cliente de MLflow).
+    if not _mlflow_disponible(cfg):
+        raise RuntimeError("MLflow no está disponible; no se inició el reentrenamiento")
     repo = Repositorio(cfg.db_url)
     datos = repo.datos_entrenamiento()
     with repo.engine.connect() as c:
@@ -136,12 +151,32 @@ def dag_publicar(cfg: Config, run_id: str) -> None:
 
 
 def dag_fallo(cfg: Config, run_id: str, motivo: str) -> None:
+    """Registra el fallo con el motivo real (si la tarea que falló lo dejó escrito).
+
+    La versión vigente se consulta a MLflow solo si responde rápido; si no, queda vacía y la API
+    informa la versión que está sirviendo (no se esperan los reintentos del cliente de MLflow).
+    """
     repo = Repositorio(cfg.db_url)
-    try:
-        version = registro.version_vigente(cfg)
-    except Exception:  # noqa: BLE001
-        version = None
+    archivo = _carpeta(run_id) / "motivo_fallo.txt"
+    if archivo.exists():
+        motivo = f"{archivo.read_text(encoding='utf-8').strip()} — el modelo vigente no cambió"
+    version = None
+    if _mlflow_disponible(cfg, intentos=1):
+        try:
+            version = registro.version_vigente(cfg)
+        except Exception:  # noqa: BLE001
+            version = None
     repo.finalizar_reentrenamiento(run_id, "fallido", False, version, motivo)
+
+
+def _ejecutar_paso(funcion, cfg: Config, run_id: str) -> None:
+    """Ejecuta un paso del DAG; si falla, deja el motivo para ``dag-fallo`` y propaga el error."""
+    try:
+        funcion(cfg, run_id)
+    except BaseException as e:
+        texto = str(e) or type(e).__name__
+        (_carpeta(run_id) / "motivo_fallo.txt").write_text(f"{funcion.__name__}: {texto}"[:500], encoding="utf-8")
+        raise
 
 
 def main(argv=None) -> None:
@@ -157,8 +192,12 @@ def main(argv=None) -> None:
         return
     if not a.run_id:
         sys.exit("--run-id es obligatorio para los pasos del DAG")
-    {"dag-preparar": dag_preparar, "dag-entrenar": dag_entrenar, "dag-decidir": dag_decidir,
-     "dag-publicar": dag_publicar}.get(a.comando, lambda c, r: dag_fallo(c, r, a.motivo))(cfg, a.run_id)
+    pasos = {"dag-preparar": dag_preparar, "dag-entrenar": dag_entrenar, "dag-decidir": dag_decidir,
+             "dag-publicar": dag_publicar}
+    if a.comando in pasos:
+        _ejecutar_paso(pasos[a.comando], cfg, a.run_id)
+    else:
+        dag_fallo(cfg, a.run_id, a.motivo)
 
 
 if __name__ == "__main__":

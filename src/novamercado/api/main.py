@@ -17,7 +17,7 @@ from fastapi.responses import JSONResponse
 from ..calidad import Rechazo
 from ..config import Config
 from ..contrato import (EstadoReentrenamiento, ModeloVigente, RespuestaObservaciones, RespuestaPrediccion,
-                        RespuestaReentrenar, Salud)
+                        RespuestaReentrenar, Salud, SolicitudObservaciones, SolicitudPrediccion)
 from . import servicio
 from .servicio import Dependencias, NoDisponible, SinModelo
 
@@ -28,6 +28,38 @@ EJEMPLO_PREDICCION = {"tienda_id": 5, "fecha": "2026-03-02",
                                    {"familia_id": "bebidas", "en_promocion": 8}]}
 EJEMPLO_OBSERVACION = {"tienda_id": 5, "fecha": "2026-03-01",
                        "ventas": [{"familia_id": "abarrotes", "ventas": 994}]}
+NOTA_REPARACION = ("Esquema del contrato. El servicio también acepta entradas que no lo cumplen y que se pueden "
+                   "reparar o responder con advertencia (ver `calidad` en la respuesta y DECISIONES.md §1); "
+                   "las que no, se rechazan con 422.")
+
+
+def _cuerpo_openapi(modelo, ejemplo) -> dict:
+    """``requestBody`` de OpenAPI que apunta al modelo Pydantic del contrato.
+
+    El endpoint lee el cuerpo crudo (para poder repararlo antes de validar), así que FastAPI no
+    puede deducir el esquema: se publica explícitamente para clientes y evaluadores.
+    """
+    return {"requestBody": {"required": True, "description": NOTA_REPARACION, "content": {"application/json": {
+        "schema": {"$ref": f"#/components/schemas/{modelo.__name__}"}, "example": ejemplo}}}}
+
+
+def _instalar_esquemas_entrada(app: FastAPI) -> None:
+    """Agrega a ``components.schemas`` los modelos de entrada del contrato (y sus anidados)."""
+    original = app.openapi
+
+    def openapi():
+        if app.openapi_schema:
+            return app.openapi_schema
+        esquema = original()
+        componentes = esquema.setdefault("components", {}).setdefault("schemas", {})
+        for modelo in (SolicitudPrediccion, SolicitudObservaciones):
+            js = modelo.model_json_schema(ref_template="#/components/schemas/{model}")
+            componentes.update(js.pop("$defs", {}))
+            componentes[modelo.__name__] = js
+        app.openapi_schema = esquema
+        return esquema
+
+    app.openapi = openapi
 
 
 def _dependencias_produccion() -> Dependencias:
@@ -51,6 +83,7 @@ def crear_app(deps: Dependencias | None = None) -> FastAPI:
 
     app = FastAPI(title="NovaMercado — Pronóstico diario de ventas", version="1.0.0", lifespan=ciclo_vida)
     app.state.deps = deps
+    _instalar_esquemas_entrada(app)
 
     async def _cuerpo(request: Request):
         try:
@@ -75,13 +108,13 @@ def crear_app(deps: Dependencias | None = None) -> FastAPI:
         return JSONResponse(status_code=422, content={"detail": jsonable_encoder(exc.errors())})
 
     @app.post("/v1/prediccion", response_model=RespuestaPrediccion, tags=["servicio"],
-              openapi_extra={"requestBody": {"content": {"application/json": {"example": EJEMPLO_PREDICCION}}}})
+              openapi_extra=_cuerpo_openapi(SolicitudPrediccion, EJEMPLO_PREDICCION))
     async def prediccion(request: Request):
         cuerpo = await _cuerpo(request)
         return await run_in_threadpool(servicio.predecir, cuerpo, request.app.state.deps)
 
     @app.post("/v1/observaciones", response_model=RespuestaObservaciones, tags=["servicio"],
-              openapi_extra={"requestBody": {"content": {"application/json": {"example": EJEMPLO_OBSERVACION}}}})
+              openapi_extra=_cuerpo_openapi(SolicitudObservaciones, EJEMPLO_OBSERVACION))
     async def observaciones(request: Request):
         cuerpo = await _cuerpo(request)
         return await run_in_threadpool(servicio.observar, cuerpo, request.app.state.deps)

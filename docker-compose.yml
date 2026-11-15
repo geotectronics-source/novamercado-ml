@@ -16,6 +16,10 @@ x-entorno-app: &entorno-app
   MLFLOW_EXPERIMENTO: novamercado_pronostico
   MARGEN_REEMPLAZO: ${MARGEN_REEMPLAZO:-0.01}
   GIT_PYTHON_REFRESH: quiet
+  # el cliente de MLflow reintenta 7 veces con espera exponencial por defecto (~minutos si cae)
+  MLFLOW_HTTP_REQUEST_MAX_RETRIES: "3"
+  MLFLOW_HTTP_REQUEST_BACKOFF_FACTOR: "1"
+  MLFLOW_HTTP_REQUEST_TIMEOUT: "30"
 
 x-airflow-comun: &airflow-comun
   build:

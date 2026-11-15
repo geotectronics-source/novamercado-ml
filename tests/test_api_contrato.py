@@ -77,7 +77,9 @@ def test_misma_fecha_puede_pedirse_dos_veces(cliente):
 def test_sin_modelo_responde_503(cliente, deps):
     deps.modelo = ModeloFijo(None)
     assert cliente.post("/v1/prediccion", json=solicitud_valida()).status_code == 503
-    assert cliente.get("/health").status_code == 503
+    r = cliente.get("/health")
+    assert r.status_code == 503
+    assert r.json()["estado"] == "degradado" and "modelo" in r.json()["motivo"]  # solo valores del Anexo
     assert cliente.get("/modelo").status_code == 503
 
 
@@ -130,6 +132,18 @@ def test_reentrenamiento_fallido_no_cambia_modelo(cliente, deps):
 def test_reentrenar_sin_airflow_responde_503(cliente, deps):
     deps.airflow.caido = True
     assert cliente.post("/admin/reentrenar").status_code == 503
+
+
+def test_openapi_publica_esquemas_de_entrada(cliente):
+    doc = cliente.get("/openapi.json").json()
+    esquemas = doc["components"]["schemas"]
+    for ruta, modelo, anidado in [("/v1/prediccion", "SolicitudPrediccion", "FamiliaSolicitud"),
+                                  ("/v1/observaciones", "SolicitudObservaciones", "VentaObservada")]:
+        cuerpo = doc["paths"][ruta]["post"]["requestBody"]["content"]["application/json"]
+        assert cuerpo["schema"] == {"$ref": f"#/components/schemas/{modelo}"}
+        assert modelo in esquemas and anidado in esquemas
+        assert {"tienda_id", "fecha"} <= set(esquemas[modelo]["required"])
+    assert esquemas["SolicitudPrediccion"]["properties"]["fecha"]["format"] == "date"
 
 
 def test_id_desconocido_404(cliente):

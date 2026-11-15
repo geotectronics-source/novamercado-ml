@@ -21,7 +21,7 @@ import pandas as pd
 
 from .catalogos import Catalogos
 from .costos import calibrar_multiplicadores, metricas
-from .features import construir_features
+from .features import VARIABLES_CATEGORICAS, construir_features
 from .modelo import Baseline, ModeloEnsamble, ModeloLGBM, ModeloLogLineal, Pronosticador
 
 DIAS_VALIDACION = 28
@@ -82,7 +82,9 @@ def entrenar_candidatos(datos: pd.DataFrame, cat: Catalogos, semilla: int = 42,
     val = X[(X["fecha"] > v.fin_calibracion) & (X["fecha"] <= v.fin_validacion) & X["ventas"].notna()]
 
     resultados: dict[str, ResultadoCandidato] = {}
-    metadatos = {"ventanas": v.como_dict(), "n_entrenamiento": int(len(tr_b))}
+    metadatos = {"ventanas": v.como_dict(), "n_entrenamiento": int(len(tr_b)),
+                 # categorías vistas al entrenar: permiten predecir con datos "planos" (MLflow, JSON)
+                 "categorias": {c: X[c].cat.categories.tolist() for c in VARIABLES_CATEGORICAS}}
 
     # ---- baseline: no se entrena, solo se calibran sus multiplicadores
     base = Baseline(metadatos=dict(metadatos))

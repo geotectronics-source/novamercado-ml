@@ -131,3 +131,34 @@ def test_ubicar_carpeta_datos_en_subcarpeta(tmp_path):
     assert ubicar_carpeta_datos(tmp_path) == sub
     (tmp_path / "historico_ventas.csv").write_text("x")
     assert ubicar_carpeta_datos(tmp_path) == tmp_path
+
+
+def test_pyfunc_predice_igual_con_datos_planos(candidatos):
+    """El ejemplo de entrada de MLflow (sin categóricas) da exactamente la misma predicción."""
+    from novamercado.registro import ModeloPyfunc, ejemplo_plano
+
+    res, ventanas, X = candidatos
+    filas = X[X["fecha"] == ventanas.fin_validacion]
+    plano = ejemplo_plano(filas, n=20)
+    assert not any(isinstance(plano[c].dtype, pd.CategoricalDtype) for c in plano)
+    for r in res.values():
+        original = r.modelo.predecir(filas.tail(20).reset_index(drop=True))
+        via_mlflow = ModeloPyfunc(r.modelo).predict(None, plano)
+        pd.testing.assert_frame_equal(original.reset_index(drop=True), via_mlflow.reset_index(drop=True))
+
+
+def test_reentrenamiento_falla_rapido_sin_mlflow(monkeypatch, tmp_path, cfg):
+    """Sin MLflow, el primer paso del DAG falla en segundos y deja el motivo para ``dag-fallo``."""
+    import dataclasses
+    import time
+
+    from novamercado import cli
+
+    monkeypatch.setenv("CARPETA_TRABAJO", str(tmp_path))
+    sin_mlflow = dataclasses.replace(cfg, mlflow_url="http://127.0.0.1:9")  # puerto cerrado
+    t0 = time.time()
+    with pytest.raises(RuntimeError, match="MLflow no está disponible"):
+        cli._ejecutar_paso(cli.dag_preparar, sin_mlflow, "reent_prueba")
+    assert time.time() - t0 < 30
+    motivo = (tmp_path / "reent_prueba" / "motivo_fallo.txt").read_text(encoding="utf-8")
+    assert motivo.startswith("dag_preparar: MLflow no está disponible")

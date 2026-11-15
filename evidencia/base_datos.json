@@ -14,39 +14,39 @@
   "observaciones": 3244,
   "reentrenamientos": [
     {
-      "id": "reent_20261115T020850_ecd0f6",
+      "id": "reent_20261115T034207_8ce1db",
       "estado": "exitoso",
       "promovido": false,
       "version": "1",
       "motivo": "Costo en validación 88 095 vs 88 932 del vigente (mejora 0.9%; se exige ≥ 1%)"
     },
     {
-      "id": "reent_20261115T020921_ac7937",
+      "id": "reent_20261115T034239_1e84da",
       "estado": "exitoso",
       "promovido": true,
       "version": "3",
       "motivo": "Costo en validación 92 496 vs 93 732 del vigente (mejora 1.3%; se exige ≥ 1%)"
     },
     {
-      "id": "reent_20261115T021008_e63bd1",
+      "id": "reent_20261115T034330_c66021",
       "estado": "exitoso",
       "promovido": false,
       "version": "3",
       "motivo": "Costo en validación 97 683 vs 97 710 del vigente (mejora 0.0%; se exige ≥ 1%)"
     },
     {
-      "id": "reent_20261115T021040_1d3ffc",
+      "id": "reent_20261115T034401_a8f20c",
       "estado": "exitoso",
       "promovido": false,
       "version": "3",
       "motivo": "Costo en validación 100 958 vs 101 170 del vigente (mejora 0.2%; se exige ≥ 1%)"
     },
     {
-      "id": "reent_20261115T021118_474229",
+      "id": "reent_20261115T034444_2ca10f",
       "estado": "fallido",
       "promovido": false,
       "version": null,
-      "motivo": "Falló una tarea del DAG; el modelo vigente no cambió"
+      "motivo": "dag_preparar: MLflow no está disponible; no se inició el reentrenamiento — el modelo vigente no cambió"
     }
   ]
 }

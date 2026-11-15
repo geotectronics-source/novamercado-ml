@@ -6,16 +6,23 @@ comparten el paquete ``novamercado``, así que el objeto se des-serializa sin c�
 from __future__ import annotations
 
 import json
+import logging
 import tempfile
 from pathlib import Path
 
 import mlflow
+import pandas as pd
+from mlflow.models import infer_signature
 import mlflow.pyfunc
 from mlflow.exceptions import MlflowException
 from mlflow.tracking import MlflowClient
 
 from .config import Config
+from .features import VARIABLES, VARIABLES_CATEGORICAS
 from .modelo import Pronosticador
+
+# Columnas que el modelo necesita: las variables + el nivel reciente y el baseline de respaldo.
+COLUMNAS_ENTRADA = VARIABLES + ["base", "media_dow"]
 
 REQUISITOS_MODELO = ["pandas==2.2.3", "numpy==1.26.4", "lightgbm==4.5.0", "scikit-learn==1.5.2", "scipy==1.17.1"]
 
@@ -27,7 +34,32 @@ class ModeloPyfunc(mlflow.pyfunc.PythonModel):
         self.pronosticador = pronosticador
 
     def predict(self, context, model_input, params=None):  # noqa: D401 - firma de MLflow
-        return self.pronosticador.predecir(model_input)
+        return self.pronosticador.predecir(restaurar_categoricas(model_input, self.pronosticador))
+
+
+def restaurar_categoricas(X: pd.DataFrame, modelo: Pronosticador) -> pd.DataFrame:
+    """Convierte tienda/familia/tipo a ``Categorical`` con las categorías del entrenamiento.
+
+    En la API las variables ya llegan como categóricas (no cambia nada); desde MLflow (ejemplo
+    de entrada, ``mlflow models serve``) llegan como valores simples y deben restaurarse.
+    """
+    categorias = modelo.metadatos.get("categorias", {})
+    if all(isinstance(X[c].dtype, pd.CategoricalDtype) for c in categorias if c in X):
+        return X
+    X = X.copy()
+    for c, cats in categorias.items():
+        if c in X and not isinstance(X[c].dtype, pd.CategoricalDtype):
+            X[c] = pd.Categorical(X[c], categories=cats)
+    return X
+
+
+def ejemplo_plano(X: pd.DataFrame, n: int = 5) -> pd.DataFrame:
+    """Filas reales de entrada del modelo, sin tipos categóricos, para la firma de MLflow."""
+    filas = X[COLUMNAS_ENTRADA].dropna()
+    filas = (filas if len(filas) >= n else X[COLUMNAS_ENTRADA]).tail(n).copy()
+    for c in VARIABLES_CATEGORICAS:
+        filas[c] = filas[c].astype(object).map(lambda v: v.item() if hasattr(v, "item") else v)
+    return filas.reset_index(drop=True)
 
 
 def cliente(cfg: Config) -> MlflowClient:
@@ -52,7 +84,7 @@ def cargar_version(cfg: Config, version: str) -> Pronosticador:
 
 
 def registrar_run(cfg: Config, nombre_run: str, modelo: Pronosticador, metricas: dict, params: dict,
-                  etiquetas: dict, extras: dict | None = None) -> str:
+                  etiquetas: dict, extras: dict | None = None, ejemplo: pd.DataFrame | None = None) -> str:
     """Crea un run con métricas, parámetros, artefactos y el modelo pyfunc. Devuelve run_id."""
     mlflow.set_tracking_uri(cfg.mlflow_url)
     mlflow.set_experiment(cfg.experimento)
@@ -70,8 +102,20 @@ def registrar_run(cfg: Config, nombre_run: str, modelo: Pronosticador, metricas:
                 else:
                     ruta.write_text(json.dumps(contenido, indent=2, default=str, ensure_ascii=False))
             mlflow.log_artifacts(d, artifact_path="reportes")
-        mlflow.pyfunc.log_model(artifact_path="modelo", python_model=ModeloPyfunc(modelo),
-                                pip_requirements=REQUISITOS_MODELO)
+        firma = None
+        if ejemplo is not None:  # firma (esquema de entrada/salida) y ejemplo de entrada reales
+            firma = infer_signature(ejemplo, ModeloPyfunc(modelo).predict(None, ejemplo))
+        # MLflow intenta además validar el ejemplo "como servidor web", lo que requiere flask (no
+        # incluido en mlflow-skinny: aquí no se sirve con MLflow). Ese aviso se silencia; la
+        # equivalencia ejemplo plano ↔ modelo la cubre tests/test_modelo.py.
+        registro_mlflow = logging.getLogger("mlflow.models.model")
+        nivel = registro_mlflow.level
+        registro_mlflow.setLevel(logging.ERROR)
+        try:
+            mlflow.pyfunc.log_model(artifact_path="modelo", python_model=ModeloPyfunc(modelo),
+                                    pip_requirements=REQUISITOS_MODELO, signature=firma, input_example=ejemplo)
+        finally:
+            registro_mlflow.setLevel(nivel)
         return run.info.run_id
 
 

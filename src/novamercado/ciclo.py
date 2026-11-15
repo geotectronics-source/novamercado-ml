@@ -52,7 +52,8 @@ def entrenar_y_registrar(datos: pd.DataFrame, cat: Catalogos, cfg: Config, orige
         runs[nombre] = registro.registrar_run(
             cfg, f"{origen}_{nombre}", r.modelo, r.metricas_validacion, params,
             etiquetas={"origen": origen, "tipo_modelo": nombre},
-            extras={"predicciones_validacion.csv": r.predicciones_validacion})
+            extras={"predicciones_validacion.csv": r.predicciones_validacion},
+            ejemplo=registro.ejemplo_plano(X[X["fecha"] == pd.Timestamp(ventanas.fin_validacion)]))
 
     mejor = min(resultados, key=lambda n: resultados[n].metricas_validacion["costo_total"])
     costo_mejor = resultados[mejor].metricas_validacion["costo_total"]

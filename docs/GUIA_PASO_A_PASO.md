@@ -221,7 +221,7 @@ preparar_datos → entrenar_candidato → evaluar_y_decidir → publicar_resulta
 | Script | Qué simula | Resultado obtenido |
 |---|---|---|
 | `scripts/simulador.py` | 28 días: observaciones, 280 solicitudes (25 % con errores), cambio de demanda, 4 reentrenamientos | sin intervención manual; costo −30 % vs sugerir la media; 1 promoción usada en 15 s |
-| `scripts/prueba_resiliencia.py` | MLflow caído, reentrenamiento que falla, reinicio | degradado en 12 s, ok en 15 s, modelo intacto, reinicio en 47 s |
+| `scripts/prueba_resiliencia.py` | MLflow caído, reentrenamiento que falla, reinicio | degradado en < 20 s, ok en < 15 s; el reentrenamiento falla rápido (~25 s) con su motivo y el modelo queda intacto; reinicio en 48 s |
 
 **Pregunta:** ¿qué pasaría si la API no guardara una copia local del modelo y MLflow estuviera
 caído justo al reiniciar?

@@ -188,7 +188,7 @@ def salud(deps: Dependencias) -> tuple[int, Salud]:
     _, version = deps.modelo.actual()
     componentes["modelo"] = f"v{version}" if version else "sin modelo"
     if version is None:
-        return 503, Salud(estado="no_disponible", motivo="no hay un modelo cargado", componentes=componentes)
+        return 503, Salud(estado="degradado", motivo="no hay un modelo cargado", componentes=componentes)
     problemas = [f"{k}: {v}" for k, v in componentes.items() if k != "modelo" and v != "ok"]
     if problemas:
         return 200, Salud(estado="degradado", motivo="; ".join(problemas), componentes=componentes)

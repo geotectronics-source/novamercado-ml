@@ -221,7 +221,9 @@ siguiente comparación).
 
 **Versionado.** Cada reentrenamiento registra tres runs (baseline, LightGBM y ensamble) y registra como
 versión al mejor de ellos; el alias `vigente` solo se mueve si se cumple el criterio. Un
-reentrenamiento que falla o no supera el criterio **no toca el alias**.
+reentrenamiento que falla o no supera el criterio **no toca el alias**. Cada modelo se registra
+con **firma** (esquema de entrada/salida) y **ejemplo de entrada** reales; el *pyfunc* acepta
+datos "planos" (sin tipos categóricos de pandas) porque guarda las categorías del entrenamiento.
 
 ## 6. Ciclo de reentrenamiento (Airflow)
 
@@ -231,7 +233,10 @@ reentrenamiento que falla o no supera el criterio **no toca el alias**.
   se toma de la última solicitud de pronóstico de ese día) → `entrenar_candidato` →
   `evaluar_y_decidir` → `publicar_resultado` (mueve el alias y escribe el resultado; si la
   escritura falla, revierte el alias). Si cualquier tarea falla, `marcar_fallo` registra el
-  motivo y deja la corrida en `failed`.
+  **motivo real** (la tarea que falló lo deja escrito) y deja la corrida en `failed`.
+* **Falla rápido:** `preparar_datos` comprueba primero que MLflow responda; si no, el
+  reentrenamiento falla en ~25 s en lugar de esperar los reintentos del cliente de MLflow
+  (≈ 3 min). Además, los reintentos del cliente se limitaron a 3 (`MLFLOW_HTTP_REQUEST_*`).
 * Las tareas corren con el Python de un **entorno virtual separado** (`/opt/venv-ml`) dentro de
   la imagen de Airflow: las dependencias del modelo no chocan con las restricciones de Airflow.
 * `GET /admin/reentrenar/{id}` lee la BD del producto y, si sigue en curso, consulta el estado
@@ -247,7 +252,9 @@ reentrenamiento que falla o no supera el criterio **no toca el alias**.
   `api-cache`) para poder arrancar aunque MLflow no esté. Un monitor revisa MLflow y Airflow
   cada 15 s: `/health` pasó a `degradado` en 12 s y volvió a `ok` en 3–18 s (según la corrida).
 * **`/health`:** `ok` si API, BD, MLflow, Airflow y modelo están bien; `degradado` + `motivo`
-  si alguna dependencia falla pero se puede responder; 503 mientras no hay modelo.
+  si alguna dependencia falla pero se puede responder. Mientras no hay modelo responde **503**
+  con `estado: "degradado"` y `motivo: "no hay un modelo cargado"`: solo se usan los dos valores
+  que nombra el Anexo (antes se usaba un tercer valor, `no_disponible`; ver la auditoría).
 * **Arranque e idempotencia:** el `bootstrap` usa un *advisory lock* para crear el esquema, solo
   carga los CSV si la tabla está vacía y solo entrena si no existe el alias `vigente`.
 
@@ -265,8 +272,13 @@ estado de calidad, versión del modelo), `predicciones` (por familia, con versi�
 * **Contrato estricto en dos etapas:** limpieza (reglas) → validación Pydantic en modo estricto.
   Si algo pasara la limpieza sin cumplir el contrato, es un error nuestro y no llega al modelo.
 * **Campo adicional `promocion_supuesta`** en cada predicción (el contrato permite agregar campos).
+* **OpenAPI con los esquemas de entrada:** como los endpoints leen el cuerpo crudo (para poder
+  repararlo), FastAPI no deduce el esquema; se publica explícitamente (`SolicitudPrediccion`,
+  `SolicitudObservaciones`) en `/openapi.json` y `/docs`.
 * **Imágenes con versiones fijas** (`python:3.12.8-slim-bookworm`, `postgres:16.6-alpine`,
-  `ghcr.io/mlflow/mlflow:v2.19.0`, `apache/airflow:2.10.4-python3.12`) y dependencias fijadas.
+  `ghcr.io/mlflow/mlflow:v2.19.0`, `apache/airflow:2.10.4-python3.12`) y dependencias fijadas,
+  incluido el backend de construcción (`setuptools==75.6.0`). No se fijan digests ni paquetes
+  `apt` (`libgomp1`, `curl`): se consideró excesivo para el alcance del laboratorio.
 * **Datos y credenciales fuera del repositorio y de las imágenes** (`.gitignore`, `.dockerignore`,
   `.env.example`). La carpeta `datos/` se monta en solo lectura.
 

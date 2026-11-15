@@ -79,7 +79,7 @@ Leyenda: ✅ cumple y está verificado.
 | 5.5 | Datos y credenciales fuera de las imágenes y del repositorio; `.env.example` | ✅ | `.gitignore`, `.dockerignore`, `.env.example`; en GitHub, `datos/` solo contiene `LEEME.md` |
 | 5.6 | Con MLflow caído la API sigue respondiendo; `/health` lo refleja en < 1 min y vuelve a ok en < 2 min | ✅ | 12 s y 3–15 s (`resiliencia.json`) |
 | 5.7 | Listo (`/health` ok) en ≤ 10 min sin contar la construcción | ✅ | 43–45 s desde cero; 42–47 s tras `down`/`up`; 30 s tras `stop`/`start` |
-| 5.8 | Cada reentrenamiento termina en ≤ 10 min | ✅ | ~20 s con tres candidatos (≈ 3 min el que falla con MLflow caído); `dagrun_timeout` de 10 min |
+| 5.8 | Cada reentrenamiento termina en ≤ 10 min | ✅ | ~20 s con tres candidatos; ~25 s el que falla con MLflow caído (falla rápido); `dagrun_timeout` de 10 min |
 
 ## 6. Documentación y decisiones
 
@@ -100,7 +100,7 @@ Leyenda: ✅ cumple y está verificado.
 | `POST /admin/reentrenar`: 202 con `id` (texto), o 503 si no se puede iniciar | ✅ | `test_reentrenar_flujo`, `test_reentrenar_sin_airflow_responde_503` |
 | `GET /admin/reentrenar/{id}`: en_curso / exitoso / fallido; promovido, versión y motivo al terminar; 404 si no existe | ✅ | `test_reentrenar_flujo`, `test_reentrenamiento_fallido_no_cambia_modelo`, `test_id_desconocido_404` |
 | `GET /modelo`: nombre, alias y versión como texto | ✅ | `test_modelo_vigente` |
-| `GET /health`: ok / degradado + motivo; 503 sin modelo | ✅ | `test_health_ok_y_degradado`, `test_sin_modelo_responde_503` |
+| `GET /health`: ok / degradado + motivo; 503 sin modelo (con `estado: "degradado"`, solo valores del Anexo) | ✅ | `test_health_ok_y_degradado`, `test_sin_modelo_responde_503` |
 
 ## Entregables
 
@@ -111,3 +111,20 @@ Leyenda: ✅ cumple y está verificado.
 | README.md y DECISIONES.md | ✅ |
 | Evidencia: experimentos y versiones en MLflow, ejecuciones del DAG y respuestas de la API a solicitudes válidas y defectuosas | ✅ `evidencia/` (JSON + capturas) |
 | Repositorio accesible al equipo docente | ✅ público |
+
+## Auditoría independiente (Codex)
+
+Un auditor independiente (Codex) clonó el tag, levantó el producto desde cero y lo probó con su
+propio cliente de caja negra. Veredicto: **cumple con observaciones**, sin hallazgos críticos ni
+altos. Informe completo: [`evidencia/auditoria_codex.md`](../evidencia/auditoria_codex.md).
+Atención a cada observación:
+
+| Hallazgo | Severidad | Estado | Corrección |
+|---|---|---|---|
+| M01 `/health` usaba un tercer estado (`no_disponible`) | Medio | ✅ Corregido | 503 con `estado: "degradado"` + `motivo`; `contrato.Salud` solo admite `ok`/`degradado` |
+| M02 OpenAPI sin esquemas de entrada | Medio | ✅ Corregido | `requestBody` apunta a `SolicitudPrediccion` / `SolicitudObservaciones` (prueba `test_openapi_publica_esquemas_de_entrada`) |
+| M03 Modelos MLflow sin firma ni ejemplo | Medio | ✅ Corregido | `signature` + `input_example` reales; el *pyfunc* acepta datos planos (prueba `test_pyfunc_predice_igual_con_datos_planos`) |
+| M04 Reentrenamiento con MLflow caído tardaba 184 s | Medio | ✅ Corregido | Comprobación previa de MLflow y reintentos limitados: ahora **25 s**, con el motivo real (prueba `test_reentrenamiento_falla_rapido_sin_mlflow`) |
+| B01 `setuptools>=68`, `apt` y digests sin fijar | Bajo | ✅ Parcial | `setuptools==75.6.0`; digests y `apt` se dejan sin fijar (decisión documentada) |
+| B02 Avisos de caché de pytest | Bajo | ✅ Corregido | `-p no:cacheprovider` en `pyproject.toml` |
+| B03 Fecha límite del tag no verificable | Bajo | — | El PDF no indica la fecha; se verifica en el GES |

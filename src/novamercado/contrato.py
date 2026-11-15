@@ -97,6 +97,7 @@ class ModeloVigente(BaseModel):
 
 
 class Salud(BaseModel):
-    estado: Literal["ok", "degradado", "no_disponible"]
+    # Solo los dos valores del Anexo. Sin modelo cargado: HTTP 503 con estado "degradado" + motivo.
+    estado: Literal["ok", "degradado"]
     motivo: str | None = None
     componentes: dict[str, str] = {}
